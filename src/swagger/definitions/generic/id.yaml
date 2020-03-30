@@ -1,0 +1,5 @@
+definitions:
+  entityID:
+    type: number
+  status:
+    type: string

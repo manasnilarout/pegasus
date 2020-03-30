@@ -1,0 +1,9 @@
+definitions:
+    status:
+      required:
+        - "status"
+      properties:
+        status:
+          type: "string"
+          example: "success"
+      type: "object"

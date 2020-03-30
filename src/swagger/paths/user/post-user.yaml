@@ -1,0 +1,25 @@
+tags:
+  - User
+summary:
+description: This API is used to create an entry in the database for a new user.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../definitions/user/create-user.yaml#/definitions/body
+produces:
+  - application/json
+responses:
+  "200":
+    description: Ok. API has been processed successfully.
+    content:
+      application/json:
+        schema:
+            $ref: ../../definitions/user/create-user.yaml#/definitions/body
+  "400":
+    description: Bad request.
+  "404":
+    description: Resource not found.
+  "500":
+    description: Internal server error.

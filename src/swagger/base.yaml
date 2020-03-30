@@ -1,0 +1,13 @@
+openapi: 3.0.1
+servers:
+  - url: 'http://localhost/api/'
+tags:
+  - name: User
+    description: API related to managing hotel user details.
+schemes:
+  - http
+paths:
+  # User Controller
+  /user:
+    post:
+      $ref: ./paths/user/post-user.yaml

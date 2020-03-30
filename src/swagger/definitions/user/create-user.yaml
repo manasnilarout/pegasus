@@ -1,0 +1,9 @@
+definitions:
+  body:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "Albert"
