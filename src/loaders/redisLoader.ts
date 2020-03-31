@@ -1,11 +1,11 @@
-import { RedisConnectionOpts, RedisDB } from 'caleido-lib/redis';
 import { EventDispatcher } from 'event-dispatch';
 import { MicroframeworkLoader, MicroframeworkSettings } from 'microframework-w3tec';
-import Container from 'typedi';
+import { Container } from 'typedi';
 
 import { events } from '../api/subscribers/events';
 import { config } from '../config';
 import { env } from '../env';
+import { RedisConnectionOpts, RedisDB } from '../utils/redis';
 
 export const redisLoader: MicroframeworkLoader = async (settings: MicroframeworkSettings | undefined) => {
     if (settings && env.redis.enabled) {

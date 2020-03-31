@@ -1,4 +1,4 @@
-import { LoggerInterface } from 'caleido-lib/LoggerInterface';
+import { LoggerInterface } from '../../../src/logger';
 
 export class LogMock implements LoggerInterface {
 

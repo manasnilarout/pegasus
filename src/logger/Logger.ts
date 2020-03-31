@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as winston from 'winston';
 
-import { LoggerInterface } from '../LoggerInterface';
-import { LoggerOptions } from '../types';
+import { LoggerInterface } from './LoggerInterface';
+import { LoggerOptions } from './LoggerOptions';
 
 /**
  * core.Log
