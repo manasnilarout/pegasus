@@ -91,7 +91,6 @@
     "setupTestFrameworkScriptFile": "./test/unit/lib/setup.ts"
   },
   "private": true,
-  "license": "Contact Osmosys",
   "devDependencies": {
     "@types/amqplib": "^0.5.13",
     "@types/bluebird": "^3.5.18",

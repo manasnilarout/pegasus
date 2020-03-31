@@ -1,7 +1,4 @@
 <h1 align="center">Debugging</h1>
-<p align="center">
-  <sub>Made with ❤️ by <a href="https://www.osmosys.asia">Osmosys Software Solutions</a></sub>
-</p>
 
 ## ❯ Purpose
 
@@ -61,4 +58,4 @@ Voila! Now put breakpoints in your code and start debugging in the remote sessio
 
 ## ❯ License
 
-Contact [Osmosys](https://osmosys.asia/)
+Contact [Manas](mailto:manasnilarout@gmail.com)
