@@ -1,5 +1,5 @@
 import {
-    Column, CreateDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn
+    Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
@@ -59,11 +59,9 @@ export class User {
     @Column({ name: 'created_by' })
     public createdBy: string | null;
 
-    @OneToOne(() => Chemist, chemist => chemist.user)
-    @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
-    public user: Chemist;
+    @OneToMany(() => Chemist, chemist => chemist.user)
+    public chemists: Chemist[];
 
-    @OneToOne(() => MedicalRepresentative, medicalRepresentative => medicalRepresentative.user)
-    @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
-    public user2: MedicalRepresentative;
+    @OneToMany(() => MedicalRepresentative, medicalRepresentative => medicalRepresentative.user)
+    public medicalRepresentatives: MedicalRepresentative[];
 }

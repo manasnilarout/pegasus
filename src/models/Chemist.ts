@@ -1,5 +1,6 @@
 import {
-    Column, CreateDateColumn, Entity, Index, OneToMany, OneToOne, PrimaryGeneratedColumn
+    Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany,
+    PrimaryGeneratedColumn
 } from 'typeorm';
 
 import { Claim } from './Claim';
@@ -66,6 +67,7 @@ export class Chemist {
     @OneToMany(() => Orders, orders => orders.chemist)
     public orders: Orders[];
 
-    @OneToOne(() => User, user => user.user)
+    @ManyToOne(() => User, user => user.chemists)
+    @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
     public user: User;
 }

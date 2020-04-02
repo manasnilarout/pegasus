@@ -1,5 +1,6 @@
 import {
-    Column, CreateDateColumn, Entity, Index, OneToMany, OneToOne, PrimaryGeneratedColumn
+    Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne,
+    PrimaryGeneratedColumn
 } from 'typeorm';
 
 import { Claim } from './Claim';
@@ -42,6 +43,7 @@ export class MedicalRepresentative {
     @OneToOne(() => Token, token => token.mr)
     public token: Token;
 
-    @OneToOne(() => User, user => user.user2)
+    @ManyToOne(() => User, user => user.medicalRepresentatives)
+    @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
     public user: User;
 }
