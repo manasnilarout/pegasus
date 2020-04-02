@@ -9,6 +9,11 @@ import { Orders } from './Orders';
 import { Token } from './Token';
 import { User } from './User';
 
+export enum MRStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Index('mr_id_UNIQUE', ['mrId'], { unique: true })
 @Index('fk_mr_mr_id_user_user_id_idx', ['userId'], {})
 @Entity('medical_representative', { schema: 'pegasus_db' })
@@ -26,7 +31,7 @@ export class MedicalRepresentative {
     public totalOrderAmount: number | null;
 
     @Column({ name: 'status' })
-    public status: boolean;
+    public status: MRStatus;
 
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
