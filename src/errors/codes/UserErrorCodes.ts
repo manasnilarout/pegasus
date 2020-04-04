@@ -19,6 +19,26 @@ const UserErrorCodes = {
         id: 'finding-user-failed',
         msg: 'There was an error while finding user.',
     },
+    loginFailed: {
+        id: 'user-login-failed',
+        msg: 'There was an error while user logging in.',
+    },
+    passwordNotMatched: {
+        id: 'username-password-not-matching',
+        msg: 'Provided username and password doesn\'t seem to be matching, please try again.',
+    },
+    userExists: {
+        id: 'user-already-exists',
+        msg: 'User with given phone number already exists.',
+    },
+    userLoginDetails: {
+        id: 'user-login-details-missing',
+        msg: 'Login details for the user are missing.',
+    },
+    userPhoneNumberMissing: {
+        id: 'user-phone-number-missing',
+        msg: 'Phone number for the user is missing.',
+    },
 };
 
 export { UserErrorCodes };

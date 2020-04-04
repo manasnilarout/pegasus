@@ -3,12 +3,15 @@ import { MicroframeworkLoader, MicroframeworkSettings } from 'microframework-w3t
 import * as path from 'path';
 import { useExpressServer } from 'routing-controllers';
 
+import { authorizationChecker } from '../auth/authenticator';
+import { currentUserChecker } from '../auth/currentUserChecker';
 import { config } from '../config';
 import { env } from '../env';
 
 export const httpLoader: MicroframeworkLoader = (settings: MicroframeworkSettings | undefined) => {
     if (settings) {
         const expressApp: express.Application = settings.getData('express_app');
+        const connection = settings.getData('connection');
 
         // @TODO Convert require to import.
         // Importing and not using apiMetrics() causes it to call /metrics continuously.
@@ -44,8 +47,8 @@ export const httpLoader: MicroframeworkLoader = (settings: MicroframeworkSetting
             /**
              * Authorization features
              */
-            authorizationChecker: undefined,
-            currentUserChecker: undefined,
+            authorizationChecker: authorizationChecker(),
+            currentUserChecker: currentUserChecker(connection),
         });
     }
 };

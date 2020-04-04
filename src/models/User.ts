@@ -1,17 +1,27 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
 import {
-    Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn
+    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne,
+    PrimaryGeneratedColumn
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
-import { MedicalRepresentative } from './MedicalRepresentative';
+import { HeadQuarters } from './HeadQuarters';
+import { Product } from './Product';
+import { States } from './States';
+import { UserLoginDetails } from './UserLoginDetails';
+import { UserTokens } from './UserTokens';
+
+export enum UserType {
+    MR = 'mr',
+    ADMIN = 'admin',
+    CHEMIST = 'chemist',
+}
 
 export enum UserStatus {
     ACTIVE = 1,
     INACTIVE = 0,
 }
 
-@Index('user_id_UNIQUE', ['userId'], { unique: true })
 @Entity('user', { schema: 'pegasus_db' })
 export class User {
     @PrimaryGeneratedColumn({ name: 'user_id' })
@@ -19,71 +29,68 @@ export class User {
 
     @IsNotEmpty()
     @Column({ name: 'first_name' })
-    public firstName: string;
+    public name: string;
 
-    @Column({ name: 'last_name' })
-    public lastName: string | null;
-
-    @IsNotEmpty()
-    @Column({ name: 'username' })
-    public username: string;
-
-    @IsNotEmpty()
-    @Column({ name: 'password', length: 100 })
-    public password: string;
-
-    @IsNotEmpty()
-    @IsPhoneNumber('IN')
-    @Column({ name: 'phone', length: 20 })
-    public phone: string;
-
-    @IsPhoneNumber('IN')
     @IsOptional()
-    @Column({ name: 'secondary_phone', length: 20 })
-    public secondaryPhone: string | null;
-
-    @IsNotEmpty()
     @IsEmail()
-    @Column({ name: 'email', length: 75 })
+    @Column({ name: 'email' })
     public email: string | null;
 
     @IsNotEmpty()
-    @Column({ name: 'address_1', length: 100 })
-    public address_1: string;
+    @IsPhoneNumber('IN')
+    @Column({ name: 'phone' })
+    public phone: string;
 
-    @Column({ name: 'address_2', length: 100 })
-    public address_2: string | null;
+    @IsOptional()
+    @IsPhoneNumber('IN')
+    @Column({ name: 'alt_phone' })
+    public altPhone: string;
+
+    @IsEnum(UserType)
+    @IsNotEmpty()
+    @Column({ name: 'designation', enum: UserType })
+    public designation: UserType;
+
+    @Column({ name: 'head_quarter' })
+    public headQuarter: number;
 
     @IsNotEmpty()
-    @Column({ name: 'city', length: 15 })
+    @Column({ name: 'city' })
     public city: string;
 
-    @IsNotEmpty()
-    @Column({ name: 'state', length: 15 })
-    public state: string;
+    @Column({ name: 'state' })
+    public state: number;
 
     @IsNotEmpty()
-    @Column({ name: 'country', length: 15, default: () => "'India'" })
-    public country: string;
-
-    @IsNotEmpty()
-    @Column({ name: 'pin', length: 10 })
-    public pin: string;
+    @Column({ name: 'address' })
+    public address: string;
 
     @Column({ name: 'status' })
     public status: UserStatus;
 
-    @CreateDateColumn({ name: 'created_on' })
-    public createdOn: Date;
-
     @Column({ name: 'created_by' })
     public createdBy: string | null;
 
-    @OneToMany(() => Chemist, chemist => chemist.user, { cascade: true })
+    @CreateDateColumn({ name: 'created_on' })
+    public createdOn: Date;
+
+    @OneToMany(() => Chemist, chemist => chemist.createdBy2)
     public chemists: Chemist[];
 
-    @OneToMany(() => MedicalRepresentative, medicalRepresentative => medicalRepresentative.user, {
-        cascade: true,
-    })
-    public medicalRepresentatives: MedicalRepresentative[];
+    @OneToMany(() => Product, product => product.createdByUser)
+    public products: Product[];
+
+    @ManyToOne(() => HeadQuarters, headQuarters => headQuarters.users)
+    @JoinColumn([{ name: 'head_quarter', referencedColumnName: 'id' }])
+    public headQuarter2: HeadQuarters;
+
+    @ManyToOne(() => States, states => states.users)
+    @JoinColumn([{ name: 'state', referencedColumnName: 'id' }])
+    public state2: States;
+
+    @OneToOne(() => UserLoginDetails, userLoginDetails => userLoginDetails.user, { cascade: true })
+    public userLoginDetails: UserLoginDetails;
+
+    @OneToMany(() => UserTokens, userTokens => userTokens.user)
+    public userTokens: UserTokens[];
 }
