@@ -1,5 +1,5 @@
 import {
-    Authorized, Body, CurrentUser, Get, JsonController, Param, Post, QueryParams
+    Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParams
 } from 'routing-controllers';
 
 import ProductFindRequest from '../../../api/request/ProductFindRequest';
@@ -32,7 +32,22 @@ export class DeviceController {
 
     @Authorized()
     @Get()
-    public async getProducts(@QueryParams() params: ProductFindRequest): Promise<FindResponse<User>> {
+    public async getProducts(@QueryParams() params: ProductFindRequest): Promise<FindResponse<Product>> {
         return await this.productService.getProducts(params);
+    }
+
+    @Authorized()
+    @Put(Route.ID)
+    public async editProduct(
+        @Param('productId') productId: string,
+        @Body() product: Product
+    ): Promise<Product> {
+        return await this.productService.editProduct(Number(productId), product);
+    }
+
+    @Authorized()
+    @Delete(Route.ID)
+    public async deleteProduct(@Param('productId') productId: string): Promise<Product> {
+        return await this.productService.deactivateProduct(Number(productId));
     }
 }

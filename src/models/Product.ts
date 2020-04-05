@@ -7,6 +7,11 @@ import { PackType } from './PackType';
 import { ProductType } from './ProductType';
 import { User } from './User';
 
+export enum ProductStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('product', { schema: 'pegasus_db' })
 export class Product {
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -36,6 +41,9 @@ export class Product {
 
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
+
+    @Column({ name: 'status' })
+    public status: ProductStatus;
 
     @Column({ name: 'created_by' })
     public createdBy: string;

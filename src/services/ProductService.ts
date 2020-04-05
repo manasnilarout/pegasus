@@ -8,7 +8,7 @@ import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
 import { AppBadRequestError, AppValidationError } from '../errors';
 import { ProductErrorCodes as ErrorCodes } from '../errors/codes';
-import { Product } from '../models/Product';
+import { Product, ProductStatus } from '../models/Product';
 import { User } from '../models/User';
 import { ProductRepository } from '../repositories/ProductRepository';
 import { AppService } from './AppService';
@@ -24,16 +24,7 @@ export class ProductService extends AppService {
 
     public async createProduct(product: Product, loggedInUser: User): Promise<Product> {
         try {
-            const errors = await validate(product);
-
-            if (errors && errors.length) {
-                throw new AppValidationError(
-                    ErrorCodes.productValidationFailed.id,
-                    ErrorCodes.productValidationFailed.msg,
-                    { product, errors }
-                );
-            }
-
+            await this.validateProduct(product);
             product.createdByUser = loggedInUser;
             return await this.productRepository.save(product);
         } catch (err) {
@@ -80,5 +71,69 @@ export class ProductService extends AppService {
 
     public async getProducts(productFindRequest: ProductFindRequest): Promise<FindResponse<Product>> {
         return await this.fetchAll(this.productRepository, productFindRequest);
+    }
+
+    public async editProduct(productId: number, product: Product): Promise<Product> {
+        try {
+            const existingProduct = await this.productRepository.findOne((productId));
+
+            if (!existingProduct) {
+                throw new AppBadRequestError(
+                    ErrorCodes.productNotFound.id,
+                    ErrorCodes.productNotFound.msg,
+                    { productId }
+                );
+            }
+
+            await this.validateProduct(product);
+            return await this.productRepository.save(product);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.editProductFailed.id,
+                ErrorCodes.editProductFailed.msg,
+                { productId, product }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async deactivateProduct(productId: number): Promise<Product> {
+        try {
+            const product = await this.productRepository.findOne(productId);
+
+            if (!product) {
+                throw new AppBadRequestError(
+                    ErrorCodes.productNotFound.id,
+                    ErrorCodes.productNotFound.msg,
+                    { productId }
+                );
+            }
+
+            product.status = ProductStatus.INACTIVE;
+            return await this.productRepository.save(product);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.deleteProductFailed.id,
+                ErrorCodes.deleteProductFailed.msg,
+                { productId }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    private async validateProduct(product: Product): Promise<void> {
+        const errors = await validate(product);
+
+        if (errors && errors.length) {
+            throw new AppValidationError(
+                ErrorCodes.productValidationFailed.id,
+                ErrorCodes.productValidationFailed.msg,
+                { product, errors }
+            );
+        }
     }
 }

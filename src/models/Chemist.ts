@@ -2,7 +2,7 @@ import {
     Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn
 } from 'typeorm';
 
-import { ChemistMrs } from './entities/ChemistMrs';
+import { ChemistMrs } from './ChemistMrs';
 import { HeadQuarters } from './HeadQuarters';
 import { States } from './States';
 import { User } from './User';

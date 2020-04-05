@@ -15,4 +15,12 @@ export const ProductErrorCodes = {
         id: 'product-not-found',
         msg: 'Product with given details not found.',
     },
+    editProductFailed: {
+        id: 'edit-product-failed',
+        msg: 'There was an error while editing product.',
+    },
+    deleteProductFailed: {
+        id: 'deleting-product-failed',
+        msg: 'There was an error while deleting the product.',
+    },
 };
