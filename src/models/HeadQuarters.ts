@@ -15,6 +15,6 @@ export class HeadQuarters {
     @OneToMany(() => Chemist, chemist => chemist.headQuarter2)
     public chemists: Chemist[];
 
-    @OneToMany(() => User, user => user.headQuarter2)
+    @OneToMany(() => User, user => user.headQuarter)
     public users: User[];
 }

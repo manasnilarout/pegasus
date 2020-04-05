@@ -1,4 +1,6 @@
 import { validate } from 'class-validator';
+import UserFindRequest from 'src/api/request/UserFindRequest';
+import FindResponse from 'src/api/response/FindResponse';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 
@@ -166,5 +168,9 @@ export class UserService extends AppService {
             error.log(this.log);
             throw error;
         }
+    }
+
+    public async getUsers(userFindRequest: UserFindRequest): Promise<FindResponse<User>> {
+        return await this.fetchAll(this.userRepository, userFindRequest);
     }
 }

@@ -11,9 +11,9 @@ export class RouteNotFoundMiddleware implements ExpressMiddlewareInterface {
     ) { }
 
     public use(req: Request, res: Response): void {
-        this.log.info('RouteNotFoundMiddleware reached, ending response.');
-
         if (!res.headersSent) {
+            this.log.info('RouteNotFoundMiddleware reached, ending response.');
+
             // Since headers haven't been sent yet, we can assume that no route was matched.
             res.status(404);
             res.send({

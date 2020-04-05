@@ -1,7 +1,9 @@
 import {
-    Authorized, Body, CurrentUser, Get, JsonController, Param, Post
+    Authorized, Body, CurrentUser, Get, JsonController, Param, Post, QueryParams
 } from 'routing-controllers';
 
+import ProductFindRequest from '../../../api/request/ProductFindRequest';
+import FindResponse from '../../../api/response/FindResponse';
 import { Product } from '../../../models/Product';
 import { User } from '../../../models/User';
 import { ProductService } from '../../../services/ProductService';
@@ -15,14 +17,22 @@ export class DeviceController {
 
     @Authorized()
     @Post()
-    public async createProduct(@CurrentUser() loggedInUser: User, @Body() product: Product)
-        : Promise<Product> {
-            return await this.productService.createProduct(product, loggedInUser);
+    public async createProduct(
+        @CurrentUser() loggedInUser: User,
+        @Body() product: Product
+    ): Promise<Product> {
+        return await this.productService.createProduct(product, loggedInUser);
     }
 
     @Authorized()
     @Get(Route.ID)
     public async getProduct(@Param('productId') productId: string): Promise<Product> {
         return await this.productService.getProduct(Number(productId));
+    }
+
+    @Authorized()
+    @Get()
+    public async getProducts(@QueryParams() params: ProductFindRequest): Promise<FindResponse<User>> {
+        return await this.productService.getProducts(params);
     }
 }

@@ -52,14 +52,14 @@ export class User {
     public designation: UserType;
 
     @Column({ name: 'head_quarter' })
-    public headQuarter: number;
+    public headQuarterId: number;
 
     @IsNotEmpty()
     @Column({ name: 'city' })
     public city: string;
 
     @Column({ name: 'state' })
-    public state: number;
+    public stateId: number;
 
     @IsNotEmpty()
     @Column({ name: 'address' })
@@ -82,11 +82,11 @@ export class User {
 
     @ManyToOne(() => HeadQuarters, headQuarters => headQuarters.users)
     @JoinColumn([{ name: 'head_quarter', referencedColumnName: 'id' }])
-    public headQuarter2: HeadQuarters;
+    public headQuarter: HeadQuarters;
 
     @ManyToOne(() => States, states => states.users)
     @JoinColumn([{ name: 'state', referencedColumnName: 'id' }])
-    public state2: States;
+    public state: States;
 
     @OneToOne(() => UserLoginDetails, userLoginDetails => userLoginDetails.user, { cascade: true })
     public userLoginDetails: UserLoginDetails;

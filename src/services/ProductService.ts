@@ -2,6 +2,8 @@ import { validate } from 'class-validator';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 
+import ProductFindRequest from '../api/request/ProductFindRequest';
+import FindResponse from '../api/response/FindResponse';
 import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
 import { AppBadRequestError, AppValidationError } from '../errors';
@@ -74,5 +76,9 @@ export class ProductService extends AppService {
             error.log(this.log);
             throw error;
         }
+    }
+
+    public async getProducts(productFindRequest: ProductFindRequest): Promise<FindResponse<Product>> {
+        return await this.fetchAll(this.productRepository, productFindRequest);
     }
 }

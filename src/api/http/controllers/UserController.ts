@@ -1,7 +1,9 @@
 import {
-    Authorized, Body, CurrentUser, Get, JsonController, Param, Post
+    Authorized, Body, CurrentUser, Get, JsonController, Param, Post, QueryParams
 } from 'routing-controllers';
 
+import UserFindRequest from '../../../api/request/UserFindRequest';
+import FindResponse from '../../../api/response/FindResponse';
 import { User } from '../../../models/User';
 import { UserTokens } from '../../../models/UserTokens';
 import { UserService } from '../../../services/UserService';
@@ -29,5 +31,11 @@ export class DeviceController {
     @Post(Route.LOGIN)
     public async loginUser(@Body() loginDetails: LoginCredentials): Promise<UserTokens> {
         return await this.userService.loginUser(loginDetails);
+    }
+
+    @Authorized()
+    @Get()
+    public async getUsers(@QueryParams() params: UserFindRequest): Promise<FindResponse<User>> {
+        return await this.userService.getUsers(params);
     }
 }

@@ -15,6 +15,6 @@ export class States {
     @OneToMany(() => Chemist, chemist => chemist.state2)
     public chemists: Chemist[];
 
-    @OneToMany(() => User, user => user.state2)
+    @OneToMany(() => User, user => user.state)
     public users: User[];
 }

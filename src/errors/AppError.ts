@@ -13,8 +13,10 @@ export class AppError extends Error {
     private error?: Error;
     private httpStatusCode: number;
 
-    public constructor(code: string, name: string, msg: string, status: 'fail' | 'error',
-                       data?: any, error?: any, httpStatusCode?: number) {
+    public constructor(
+        code: string, name: string, msg: string, status: 'fail' | 'error',
+        data?: any, error?: any, httpStatusCode?: number
+    ) {
         super();
 
         this.code = code;
@@ -51,11 +53,11 @@ export class AppError extends Error {
     public toString(): string {
         let shortString = this.toShortString();
         if (this.data) {
-            shortString += `Data: ${JSON.stringify(this.data)}`;
+            shortString += `\nData: ${JSON.stringify(this.data)}`;
         }
 
         if (this.error) {
-            shortString += `Error: ${this.error.name}: ${this.error.message}`;
+            shortString += `\nError: ${this.error.name}: ${this.error.message}`;
             if (!env.isProduction) {
                 shortString += `${this.error.stack}`;
             }
@@ -81,12 +83,12 @@ export class AppError extends Error {
         }
 
         if (this.error) {
-            error.data.__error = {};
-            error.data.__error.message = this.error.message;
-            error.data.__error.name = this.error.name;
+            error.data.error = {};
+            error.data.error.message = this.error.message;
+            error.data.error.name = this.error.name;
 
-            if (env.isProduction) {
-                error.data.__error.stack = this.error.stack;
+            if (!env.isProduction) {
+                error.data.error.stack = this.error.stack;
             }
         }
 
@@ -101,22 +103,21 @@ export class AppError extends Error {
         return this.status === 'error';
     }
 
-    public log(logger: LoggerInterface): void {
+    public log(logger: LoggerInterface, logType?: string): void {
         let logLevel: 'error' | 'debug' | 'info' = 'error';
         if (this.status === 'fail') {
             logLevel = 'debug';
         }
-        logger[logLevel](this.toShortString(), {
-            error: this.error || {},
+        logger[logLevel](this.toString(), {
             data: this.data || {},
-        });
+        }, logType);
     }
 
     public getHttpStatusCode(): number {
         return this.httpStatusCode;
     }
 
-    private getRequestId(): string|undefined {
+    private getRequestId(): string | undefined {
         const namespace = config.get('clsNamespace.name');
         const clsNamespace: cls.Namespace = cls.getNamespace(namespace);
         if (clsNamespace) {
