@@ -15,7 +15,6 @@ export class CreateChemistTable1585762911535 implements MigrationInterface {
             \`city\` VARCHAR(20) NOT NULL,
             \`state\` INT UNSIGNED NOT NULL,
             \`pin\` VARCHAR(10) NOT NULL,
-            \`mr\` BIGINT UNSIGNED NULL,
             \`doctor_name\` VARCHAR(50) NULL,
             \`chemist_speciality\` INT UNSIGNED NULL,
             \`status\` TINYINT NOT NULL DEFAULT 1,

@@ -1,5 +1,5 @@
 import {
-    Authorized, Body, CurrentUser, Get, JsonController, Param, Post, QueryParams
+    Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParams
 } from 'routing-controllers';
 
 import UserFindRequest from '../../../api/request/UserFindRequest';
@@ -31,6 +31,18 @@ export class DeviceController {
     @Post(Route.LOGIN)
     public async loginUser(@Body() loginDetails: LoginCredentials): Promise<UserTokens> {
         return await this.userService.loginUser(loginDetails);
+    }
+
+    @Authorized()
+    @Put(Route.ID)
+    public async editUser(@Param('userId') userId: string, @Body() user: User): Promise<User> {
+        return await this.userService.editUser(Number(userId), user);
+    }
+
+    @Authorized()
+    @Delete(Route.ID)
+    public async deleteUser(@Param('userId') userId: string): Promise<User> {
+        return await this.userService.deactivateUser(Number(userId));
     }
 
     @Authorized()

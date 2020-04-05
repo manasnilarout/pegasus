@@ -24,7 +24,7 @@ import { AuthService } from './AuthService';
 export class UserService extends AppService {
     constructor(
         private authService: AuthService,
-        @Logger(__filename, config.get('clsNamespace.name')) private log: LoggerInterface,
+        @Logger(__filename, config.get('clsNamespace.name')) protected log: LoggerInterface,
         @OrmRepository() private userRepository: UserRepository,
         @OrmRepository() private userLoginDetailsRepository: UserLoginDetailsRepository,
         @OrmRepository() private userTokensRepository: UserTokensRepository
@@ -71,20 +71,13 @@ export class UserService extends AppService {
             // https://github.com/typeorm/typeorm/issues/4209
             user.userLoginDetails.password = await UserLoginDetails.encryptUserPassword(user.userLoginDetails.password);
 
-            const errors = await validate(user);
-
-            if (errors && errors.length) {
-                throw new AppValidationError(
-                    ErrorCodes.userValidationFailed.id,
-                    ErrorCodes.userValidationFailed.msg,
-                    { user, errors }
-                );
-            }
+            await this.validateUser(user);
 
             if (loggedInUser) {
                 user.createdBy = loggedInUser.userId;
             }
 
+            this.log.info('Storing new user.');
             return await this.userRepository.save(user);
         } catch (err) {
             const error = this.classifyError(
@@ -172,5 +165,75 @@ export class UserService extends AppService {
 
     public async getUsers(userFindRequest: UserFindRequest): Promise<FindResponse<User>> {
         return await this.fetchAll(this.userRepository, userFindRequest);
+    }
+
+    public async deactivateUser(userId: number): Promise<User> {
+        try {
+            const user = await this.userRepository.findOne(userId);
+
+            if (!user) {
+                throw new AppNotFoundError(
+                    ErrorCodes.userNotFound.id,
+                    ErrorCodes.userNotFound.msg,
+                    { userId }
+                );
+            }
+
+            user.status = UserStatus.INACTIVE;
+            return await this.userRepository.save(user);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.userDeactivationFailed.id,
+                ErrorCodes.userDeactivationFailed.msg,
+                { userId }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async editUser(userId: number, user: User): Promise<User> {
+        try {
+            const existingUser = await this.userRepository.findOne({
+                relations: ['userLoginDetails'],
+                where: {
+                    userId,
+                    status: UserStatus.ACTIVE,
+                },
+            });
+
+            if (!existingUser) {
+                throw new AppBadRequestError(
+                    ErrorCodes.userNotFound.id,
+                    ErrorCodes.userNotFound.msg,
+                    { userId, user }
+                );
+            }
+
+            await this.validateUser(user);
+            return await this.userRepository.save(user);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.userEditFailed.id,
+                ErrorCodes.userEditFailed.msg,
+                { userId, user }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    private async validateUser(user: User): Promise<void> {
+        const errors = await validate(user);
+
+        if (errors && errors.length) {
+            throw new AppValidationError(
+                ErrorCodes.userValidationFailed.id,
+                ErrorCodes.userValidationFailed.msg,
+                { user, errors }
+            );
+        }
     }
 }

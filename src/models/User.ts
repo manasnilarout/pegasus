@@ -5,6 +5,7 @@ import {
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
+import { ChemistMrs } from './ChemistMrs';
 import { HeadQuarters } from './HeadQuarters';
 import { Product } from './Product';
 import { States } from './States';
@@ -93,4 +94,7 @@ export class User {
 
     @OneToMany(() => UserTokens, userTokens => userTokens.user)
     public userTokens: UserTokens[];
+
+    @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.mr)
+    public chemistMrs: ChemistMrs[];
 }

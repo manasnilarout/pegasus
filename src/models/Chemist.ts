@@ -1,16 +1,12 @@
 import {
-    Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn
+    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn
 } from 'typeorm';
 
+import { ChemistMrs } from './entities/ChemistMrs';
 import { HeadQuarters } from './HeadQuarters';
 import { States } from './States';
 import { User } from './User';
 
-@Index('chemist_id_UNIQUE', ['chemistId'], { unique: true })
-@Index('fk_chemist_speciality_speciality_id_idx', ['chemistSpeciality'], {})
-@Index('fk_chemist_state_state_id', ['state'], {})
-@Index('fk_chemist_head_quarter_head_quarter_id', ['headQuarter'], {})
-@Index('fk_chemist_created_by_user_user_id', ['createdBy'], {})
 @Entity('chemist', { schema: 'pegasus_db' })
 export class Chemist {
     @PrimaryGeneratedColumn({ type: 'int', name: 'chemist_id' })
@@ -43,9 +39,6 @@ export class Chemist {
     @Column({ name: 'pin' })
     public pin: string;
 
-    @Column({ name: 'mr' })
-    public mr: string | null;
-
     @Column({ name: 'doctor_name' })
     public doctorName: string | null;
 
@@ -72,4 +65,7 @@ export class Chemist {
     @ManyToOne(() => States, states => states.chemists)
     @JoinColumn([{ name: 'state', referencedColumnName: 'id' }])
     public state2: States;
+
+    @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.chemist)
+    public chemistMrs: ChemistMrs[];
 }

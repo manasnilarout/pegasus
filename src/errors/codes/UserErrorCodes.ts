@@ -39,6 +39,14 @@ const UserErrorCodes = {
         id: 'user-phone-number-missing',
         msg: 'Phone number for the user is missing.',
     },
+    userEditFailed: {
+        id: 'user-edit-failed',
+        msg: 'There was an error while editing user.',
+    },
+    userDeactivationFailed: {
+        id: 'user-deactivation-failed',
+        msg: 'There was an error while deactivating the user.',
+    },
 };
 
 export { UserErrorCodes };
