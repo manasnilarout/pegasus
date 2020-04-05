@@ -11,7 +11,7 @@ import { User as Route } from '../../routes/http';
 import { LoginCredentials } from '../requests/LoginCredentials';
 
 @JsonController(Route.BASE)
-export class DeviceController {
+export class UserController {
     constructor(
         private userService: UserService
     ) { }

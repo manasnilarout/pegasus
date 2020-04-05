@@ -12,3 +12,8 @@ export const Product = {
     BASE: '/product',
     ID: '/:productId',
 };
+
+export const Chemist = {
+    BASE: '/chemist',
+    ID: '/:chemistId',
+};

@@ -4,7 +4,7 @@ import { Chemist } from './Chemist';
 import { User } from './User';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
-@Entity('states', { schema: 'pegasus_db' })
+@Entity('states')
 export class States {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: number;
@@ -12,7 +12,7 @@ export class States {
     @Column({ name: 'name' })
     public name: string;
 
-    @OneToMany(() => Chemist, chemist => chemist.state2)
+    @OneToMany(() => Chemist, chemist => chemist.state)
     public chemists: Chemist[];
 
     @OneToMany(() => User, user => user.state)

@@ -8,6 +8,9 @@
         }
     },
     "dirs": {
+        "tmp": {
+            "upload": "/uploads"
+        },
         "pdf": "/pdf",
         "upload": "/uploads",
         "excel": "/excel"
@@ -17,7 +20,9 @@
     },
     "uploadFileConfig": {
         "maxFieldNameSize": 255,
-        "maxFileSizeInMB": 10
+        "maxFileSizeInMB": 5,
+        "supportedFileTypes": {},
+        "maxImageSize": 12
     },
     "redis": {
         "expiryEvent": "__keyevent@0__:expired",

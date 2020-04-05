@@ -4,7 +4,7 @@ import { Product } from './Product';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
 @Index('name_UNIQUE', ['name'], { unique: true })
-@Entity('product_type', { schema: 'pegasus_db' })
+@Entity('product_type')
 export class ProductType {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: number;

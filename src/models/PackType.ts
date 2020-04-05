@@ -3,7 +3,7 @@ import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeor
 import { Product } from './Product';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
-@Entity('pack_type', { schema: 'pegasus_db' })
+@Entity('pack_type')
 export class PackType {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: number;

@@ -23,7 +23,7 @@ export enum UserStatus {
     INACTIVE = 0,
 }
 
-@Entity('user', { schema: 'pegasus_db' })
+@Entity('user')
 export class User {
     @PrimaryGeneratedColumn({ name: 'user_id' })
     public userId: string;
@@ -75,7 +75,7 @@ export class User {
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
 
-    @OneToMany(() => Chemist, chemist => chemist.createdBy2)
+    @OneToMany(() => Chemist, chemist => chemist.createdBy)
     public chemists: Chemist[];
 
     @OneToMany(() => Product, product => product.createdByUser)

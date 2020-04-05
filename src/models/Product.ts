@@ -12,7 +12,7 @@ export enum ProductStatus {
     INACTIVE = 0,
 }
 
-@Entity('product', { schema: 'pegasus_db' })
+@Entity('product')
 export class Product {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: string;

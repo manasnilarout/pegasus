@@ -5,7 +5,7 @@ import {
 import { Chemist } from './Chemist';
 import { User } from './User';
 
-@Entity('chemist_mrs', { schema: 'pegasus_db' })
+@Entity('chemist_mrs')
 export class ChemistMrs {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: number;

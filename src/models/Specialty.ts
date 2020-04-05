@@ -1,11 +1,15 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Index('id_UNIQUE', ['id'], { unique: true })
-@Entity('specialty', { schema: 'pegasus_db' })
+import { Chemist } from './Chemist';
+
+@Entity('specialty')
 export class Specialty {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: number;
 
-    @Column('varchar', { name: 'name' })
+    @Column({ name: 'name' })
     public name: string;
+
+    @OneToMany(() => Chemist, chemist => chemist.chemistSpeciality)
+    public chemists: Chemist[];
 }

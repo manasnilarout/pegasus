@@ -10,7 +10,7 @@ import { ProductService } from '../../../services/ProductService';
 import { Product as Route } from '../../routes/http';
 
 @JsonController(Route.BASE)
-export class DeviceController {
+export class ProductController {
     constructor(
         private productService: ProductService
     ) { }

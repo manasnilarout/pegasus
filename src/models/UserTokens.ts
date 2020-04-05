@@ -9,7 +9,7 @@ export enum UserTokenStatus {
     INACTIVE = 0,
 }
 
-@Entity('user_tokens', { schema: 'pegasus_db' })
+@Entity('user_tokens')
 export class UserTokens {
     @PrimaryGeneratedColumn({ type: 'bigint', name: 'id', unsigned: true })
     public id: string;
