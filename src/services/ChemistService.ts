@@ -43,6 +43,7 @@ export class ChemistService extends AppService {
              * 2. Move the attachment to assets directory.
              * 3. Make sure hosting is proper from assets directory.
              * 4. Add attachment_url column to the attachment table and verify.
+             * 5. Add MR's relation
              */
 
             const errors = await validate(chemist);
