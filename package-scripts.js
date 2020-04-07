@@ -170,6 +170,13 @@ module.exports = {
                 ),
                 hiddenFromHelp: true
             },
+            temp: {
+                script: copyDir(
+                    './src/tmp/',
+                    './dist/tmp/'
+                ),
+                hiddenFromHelp: true
+            },
         },
         /**
          * Database scripts
