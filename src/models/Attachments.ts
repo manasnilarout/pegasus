@@ -1,5 +1,9 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn
+} from 'typeorm';
 
+import { env } from '../env';
+import { getFileName } from '../utils/file.util';
 import { Chemist } from './Chemist';
 
 @Entity('attachments')
@@ -13,6 +17,9 @@ export class Attachments {
     @Column({ name: 'file_location' })
     public fileLocation: string;
 
+    @Column({ name: 'file_url' })
+    public fileUrl: string;
+
     @Column({ name: 'status' })
     public status: number;
 
@@ -21,4 +28,10 @@ export class Attachments {
 
     @OneToMany(() => Chemist, chemist => chemist.attachment)
     public chemists: Chemist[];
+
+    @BeforeInsert()
+    public generateFileUrl(): void {
+        const fileName = getFileName(this.fileLocation);
+        this.fileUrl = `${env.app.host}:${env.app.port}${env.app.publicRoute}/attachments/${fileName}`;
+    }
 }

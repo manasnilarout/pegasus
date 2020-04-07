@@ -19,7 +19,7 @@ export class ChemistController {
     @Post()
     public async createChemist(
         @CurrentUser() loggedInUser: User,
-        @UploadedFile('firmware', { options: DefaultFileUploadConfig }) file: File,
+        @UploadedFile('chemistImage', { options: DefaultFileUploadConfig }) file: File,
         @Body() chemist: Chemist
     ): Promise<Chemist> {
         return await this.chemistService.createChemist(chemist, file, loggedInUser);

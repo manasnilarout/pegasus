@@ -1,6 +1,6 @@
 import * as cls from 'cls-hooked';
 import * as express from 'express';
-import nanoid from 'nanoid/async';
+import { nanoid } from 'nanoid/async';
 import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
 
 import { config } from '../../../config';
@@ -17,7 +17,7 @@ export class CLSMiddleware implements ExpressMiddlewareInterface {
 
             // Check if namespace is passed from caller component
             if (req.headers && req.headers.requestid) {
-                requestId = req.headers.requestid;
+                requestId = req.headers.requestid as string;
             }
             clsNamespace.set('requestID', requestId);
             next();

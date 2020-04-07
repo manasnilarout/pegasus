@@ -11,11 +11,13 @@ import { Chemist } from '../models/Chemist';
 import { User } from '../models/User';
 import { ChemistRepository } from '../repositories/ChemistRepository';
 import { AppService } from './AppService';
+import { AttachmentService } from './AttachmentService';
 
 @Service()
 export class ChemistService extends AppService {
     constructor(
         @Logger(__filename, config.get('clsNamespace.name')) protected log: LoggerInterface,
+        private attachmentService: AttachmentService,
         @OrmRepository() private chemistRepository: ChemistRepository
     ) {
         super();
@@ -39,12 +41,11 @@ export class ChemistService extends AppService {
 
             /**
              * TODO:
-             * 1. Store the attachment in tmp directory.
-             * 2. Move the attachment to assets directory.
-             * 3. Make sure hosting is proper from assets directory.
-             * 4. Add attachment_url column to the attachment table and verify.
              * 5. Add MR's relation
              */
+
+            const attachment = await this.attachmentService.createAttachment(fileDetails);
+            chemist.attachment = attachment;
 
             const errors = await validate(chemist);
 

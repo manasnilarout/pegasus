@@ -30,7 +30,7 @@ export const env = {
         banner: toBool(getOsEnv('APP_BANNER')),
         publicBasePath: getOsEnv('PUBLIC_BASE_PATH'),
         publicRoute: getOsEnv('PUBLIC_ROUTE'),
-        dirs: {
+         dirs: {
             migrations: getOsPaths('TYPEORM_MIGRATIONS'),
             migrationsDir: getOsPath('TYPEORM_MIGRATIONS_DIR'),
             entities: getOsPaths('TYPEORM_ENTITIES'),
@@ -42,6 +42,7 @@ export const env = {
             tempDir: getOsPath('TEMP_DIR'),
             templates: getOsPath('TEMPLATES_DIR'),
             publicDir: getOsEnv('PUBLIC_DIR'),
+            attachment: getOsEnv('ATTACHMENT_DIR'),
         },
     },
     log: {

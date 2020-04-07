@@ -33,7 +33,7 @@ export const moveFile = async (source: string, destination: string, newFileName?
     if (newFileName) {
         return await renameFile(destinationPath, newFileName);
     }
-    return destination;
+    return destinationPath;
 };
 
 export const renameFile = async (filePath: string, newName: string): Promise<string> => {
