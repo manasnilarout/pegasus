@@ -13,6 +13,9 @@ export default class ChemistFindRequest extends FindRequest {
     @Type(() => Number)
     public status: ChemistStatus;
 
+    @ModelProp('chemist.chemistId')
+    public id: number;
+
     @ModelProp('chemist.name')
     public name: number;
 

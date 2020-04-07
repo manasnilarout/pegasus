@@ -5,6 +5,11 @@ import {
 import { Chemist } from './Chemist';
 import { User } from './User';
 
+export enum ChemistMRStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('chemist_mrs')
 export class ChemistMrs {
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -20,7 +25,7 @@ export class ChemistMrs {
     public createdOn: Date;
 
     @Column({ name: 'status' })
-    public status: number;
+    public status: ChemistMRStatus;
 
     @ManyToOne(() => Chemist, chemist => chemist.chemistMrs)
     @JoinColumn([{ name: 'chemist_id', referencedColumnName: 'chemistId' }])

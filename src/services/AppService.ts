@@ -43,6 +43,14 @@ export class AppService {
         return await this.fetch(repository, 'all', findOptions);
     }
 
+    protected compareArrays(array1: any[], array2: any[]): any[] {
+        const missingValues: any[] = array1.filter((el) => {
+            return array2.indexOf(el) < 0;
+        });
+
+        return missingValues;
+    }
+
     private async fetch<T>(
         repository: AppFindRepository<T>, output: 'all' | 'list', findOptions?: FindRequest
     ): Promise<FindResponse<T>> {

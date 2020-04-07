@@ -11,6 +11,7 @@ export class ChemistRepository extends Repository<Chemist> implements AppFindRep
     public async findAll(findOptions?: ChemistFindRequest): Promise<FindResponse<Chemist>> {
         const queryBuilder = await this.createQueryBuilder('chemist');
         queryBuilder.leftJoinAndSelect('chemist.chemistMrs', 'chemistMrs');
+        queryBuilder.leftJoinAndSelect('chemistMrs.mr', 'mr');
         queryBuilder.leftJoinAndSelect('chemist.attachment', 'attachment');
         queryBuilder.leftJoinAndSelect('chemist.headQuarter', 'headQuarter');
         queryBuilder.leftJoinAndSelect('chemist.state', 'state');

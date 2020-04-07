@@ -94,6 +94,9 @@ export class Chemist {
     @JoinColumn([{ name: 'attachment_id', referencedColumnName: 'id' }])
     public attachment: Attachments;
 
-    @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.chemist)
+    @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.chemist, { cascade: true })
     public chemistMrs: ChemistMrs[];
+
+    // Added this for accepting mr id's during API request
+    public mrIds: string;
 }

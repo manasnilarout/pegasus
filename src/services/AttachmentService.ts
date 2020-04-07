@@ -25,6 +25,7 @@ export class AttachmentService extends AppService {
         try {
             fileName = fileName || nanoid(8);
             const path = await moveFile(file.path, env.app.dirs.attachment, fileName);
+            this.log.info('Moved file to attachments directory, attempting create record.');
             return await this.attachmentsRepository.createAttachment(path, fileName);
         } catch (err) {
             const error = this.classifyError(

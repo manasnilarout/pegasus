@@ -6,6 +6,11 @@ import { env } from '../env';
 import { getFileName } from '../utils/file.util';
 import { Chemist } from './Chemist';
 
+export enum AttachmentStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('attachments')
 export class Attachments {
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -21,7 +26,7 @@ export class Attachments {
     public fileUrl: string;
 
     @Column({ name: 'status' })
-    public status: number;
+    public status: AttachmentStatus;
 
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;

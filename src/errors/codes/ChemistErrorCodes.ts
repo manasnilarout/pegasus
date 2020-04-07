@@ -11,4 +11,20 @@ export const ChemistErrorCodes = {
         id: 'chemist-validation-failed',
         msg: 'Chemist object validation failed.',
     },
+    MRValidationFailed: {
+        id: 'mr-validation-failed',
+        msg: 'There was an error while validating MR\'s.',
+    },
+    MRsNotFound: {
+        id: 'mrs-not-found',
+        msg: 'MR\'s are missing.',
+    },
+    chemistDeletionFailed: {
+        id: 'chemist-deletion-failed',
+        msg: 'There was an error while deleting an existing chemist.',
+    },
+    chemistNotFound: {
+        id: 'chemist-not-found',
+        msg: 'Chemist with given details not found.',
+    },
 };
