@@ -64,6 +64,7 @@
     "pug": "^2.0.4",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.10",
+    "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "routing-controllers": "^0.7.6",
     "shortid": "^2.2.15",
