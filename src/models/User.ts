@@ -1,12 +1,13 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
 import {
-    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne,
+    BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
 import { ChemistMrs } from './ChemistMrs';
 import { HeadQuarters } from './HeadQuarters';
+import { Otp } from './Otp';
 import { Product } from './Product';
 import { States } from './States';
 import { UserLoginDetails } from './UserLoginDetails';
@@ -25,6 +26,10 @@ export enum UserStatus {
 
 @Entity('user')
 export class User {
+    public static filterPhoneNumber(phone: string): string {
+        return phone.match(/\d/g) ? phone.match(/\d/g).join('') : phone;
+    }
+
     @PrimaryGeneratedColumn({ name: 'user_id' })
     public userId: string;
 
@@ -97,4 +102,12 @@ export class User {
 
     @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.mr)
     public chemistMrs: ChemistMrs[];
+
+    @OneToMany(() => Otp, otp => otp.user, { cascade: true })
+    public otps: Otp[];
+
+    @BeforeInsert()
+    public filterPhone(): void {
+        this.phone = User.filterPhoneNumber(this.phone);
+    }
 }

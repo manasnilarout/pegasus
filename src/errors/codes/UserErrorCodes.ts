@@ -47,6 +47,26 @@ const UserErrorCodes = {
         id: 'user-deactivation-failed',
         msg: 'There was an error while deactivating the user.',
     },
+    userLogoutFailed: {
+        id: 'user-logout-failed',
+        msg: 'There was an error while user logging out.',
+    },
+    errorGeneratingOtp: {
+        id: 'error-generating-otp',
+        msg: 'There was an error while generating OTP.',
+    },
+    errorSendingSMS: {
+        id: 'error-sending-sms',
+        msg: 'There was an error while sending SMS.',
+    },
+    userLoginValidationFailed: {
+        id: 'user-login-validation-failed',
+        msg: 'There was an error while user login validation.',
+    },
+    receivedInvalidOtp: {
+        id: 'received-invalid-otp',
+        msg: ' Received invalid OTP.',
+    },
 };
 
 export { UserErrorCodes };

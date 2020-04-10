@@ -7,4 +7,7 @@ export const events = {
     Redis: {
         KeyExpiry: 'onKeyExpiry',
     },
+    OTP: {
+        otpExpiry: 'onOtpExpiry',
+    },
 };

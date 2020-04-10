@@ -11,7 +11,7 @@ export enum UserTokenStatus {
 
 @Entity('user_tokens')
 export class UserTokens {
-    @PrimaryGeneratedColumn({ type: 'bigint', name: 'id', unsigned: true })
+    @PrimaryGeneratedColumn({ name: 'id' })
     public id: string;
 
     @Column({ name: 'user_id' })

@@ -9,7 +9,7 @@ import PDF from 'wkhtmltopdf';
 import { config } from '../config';
 import { env } from '../env';
 
-export class PDFUtil {
+export class RendererUtil {
 
     protected _readFileAsync = promisify(readFile);
     protected _existsAsync = promisify(exists);
@@ -52,10 +52,10 @@ export class PDFUtil {
      * @param data Data to be passed to template.
      * @returns rendered HTML string.
      */
-    private async renderHTMLTemplate(templateName: string, data: any): Promise<string> {
+    public async renderHTMLTemplate(templateName: string, data: any, type?: 'sms' | 'pdf'): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
-                const filePath = join(env.app.dirs.templates, config.get('dirs.pdf'), `${templateName}.pug`);
+                const filePath = join(env.app.dirs.templates, config.get(`dirs.${type}`), `${templateName}.pug`);
 
                 if (!await this._existsAsync(filePath)) {
                     return reject(new Error(`File not found. "${filePath}"`));

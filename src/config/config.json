@@ -12,6 +12,7 @@
             "upload": "/uploads"
         },
         "pdf": "/pdf",
+        "sms": "/sms",
         "upload": "/uploads",
         "excel": "/excel"
     },
@@ -27,6 +28,9 @@
     "redis": {
         "expiryEvent": "__keyevent@0__:expired",
         "expiredKeyCode": -2
+    },
+    "otp": {
+        "otpExpiryTimeInMinutes": 15
     },
     "prometheusMetricsOption": {
         "metricsPath": "/metrics",

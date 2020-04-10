@@ -98,4 +98,11 @@ export const env = {
     prometheusMetrics: {
         enabled: toBool(getOsEnvOptional('ENABLE_METRICS')),
     },
+    fovea: {
+        sms: {
+            endPoint: getOsEnv('FOVEA_SMS_END_POINT'),
+            auth: getOsEnv('FOVEA_SMS_AUTH_KEY'),
+            sender: getOsEnv('FOVEA_SMS_SENDER'),
+        },
+    },
 };
