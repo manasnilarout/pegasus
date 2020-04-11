@@ -6,7 +6,7 @@ export class CreateUserLoginTable1585762911530 implements MigrationInterface {
         await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`user_login_details\` (
             \`user_id\` BIGINT UNSIGNED NOT NULL,
-            \`username\` VARCHAR(15) NOT NULL,
+            \`username\` VARCHAR(75) NOT NULL,
             \`password\` VARCHAR(100) NOT NULL,
             PRIMARY KEY (\`user_id\`),
             UNIQUE INDEX \`user_id_UNIQUE\` (\`user_id\` ASC),

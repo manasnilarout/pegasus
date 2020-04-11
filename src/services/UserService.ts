@@ -60,7 +60,7 @@ export class UserService extends AppService {
         super();
     }
 
-    public async createMR(user: User, loggedInUser: User): Promise<User> {
+    public async createUser(user: User, loggedInUser: User): Promise<User> {
         try {
             user.phone = user.phone.match(/\d/g) ? user.phone.match(/\d/g).join('') : '';
 
@@ -99,6 +99,7 @@ export class UserService extends AppService {
             // https://github.com/typeorm/typeorm/issues/4209
             user.userLoginDetails.password = await UserLoginDetails.encryptUserPassword(user.userLoginDetails.password);
 
+            this.log.debug(`Validating user.`);
             await this.validateUser(user);
 
             if (loggedInUser) {

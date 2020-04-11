@@ -16,16 +16,19 @@ export default class ChemistFindRequest extends FindRequest {
     @ModelProp('chemist.chemistId')
     public id: number;
 
-    @ModelProp('chemist.name')
-    public name: number;
+    @ModelProp('mr.id')
+    public mrId: number;
+
+    @ModelProp('chemist.shopName')
+    public shopName: number;
 
     @ModelProp('chemistSpeciality.name')
     public specialty: number;
 
-    @ModelProp('chemist.stateId')
+    @ModelProp('user.stateId')
     public state: number;
 
-    @ModelProp('chemist.headQuarterId')
+    @ModelProp('user.headQuarterId')
     public headQuarter: number;
 
     @ModelProp('chemist.createdOn', { sortable: true })

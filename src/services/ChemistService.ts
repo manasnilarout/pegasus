@@ -1,84 +1,68 @@
-import { validate } from 'class-validator';
 import { Service } from 'typedi';
-import { In } from 'typeorm';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 
 import ChemistFindRequest from '../api/request/ChemistFindRequest';
+import { ChemistRequest } from '../api/request/ChemistRequest';
 import { File } from '../api/request/FileRequest';
 import FindResponse from '../api/response/FindResponse';
 import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
-import { AppBadRequestError, AppValidationError } from '../errors';
+import { AppBadRequestError } from '../errors';
 import { ChemistErrorCodes as ErrorCodes } from '../errors/codes';
 import { AttachmentStatus } from '../models/Attachments';
 import { Chemist, ChemistStatus } from '../models/Chemist';
-import { ChemistMrs, ChemistMRStatus } from '../models/ChemistMrs';
 import { User, UserStatus, UserType } from '../models/User';
+import { UserLoginDetails } from '../models/UserLoginDetails';
 import { AttachmentsRepository } from '../repositories/AttachmentsRepository';
-import { ChemistMrsRepository } from '../repositories/ChemistMRsRepository';
 import { ChemistRepository } from '../repositories/ChemistRepository';
 import { UserRepository } from '../repositories/UserRepository';
 import { TransactionManager } from '../utils/TransactionManager';
 import { AppService } from './AppService';
 import { AttachmentService } from './AttachmentService';
+import { UserService } from './UserService';
 
 @Service()
 export class ChemistService extends AppService {
     constructor(
         @Logger(__filename, config.get('clsNamespace.name')) protected log: LoggerInterface,
         private attachmentService: AttachmentService,
+        private userService: UserService,
         @OrmRepository() private chemistRepository: ChemistRepository,
         @OrmRepository() private userRepository: UserRepository,
-        @OrmRepository() private attachmentsRepository: AttachmentsRepository,
-        @OrmRepository() private chemistMrsRepository: ChemistMrsRepository
+        @OrmRepository() private attachmentsRepository: AttachmentsRepository
     ) {
         super();
     }
 
-    public async createChemist(chemist: Chemist, fileDetails: File, loggedInUser: User): Promise<Chemist> {
+    public async createChemist(
+        chemist: ChemistRequest,
+        shopPhoto: File,
+        shopLicence: File,
+        loggedInUser: User
+    ): Promise<Chemist> {
         try {
-            const oldChemist = await this.chemistRepository.findOne({
-                where: {
-                    name: chemist.name,
-                    status: ChemistStatus.ACTIVE,
-                },
+            const userObj = this.mapToUser(chemist, loggedInUser);
+
+            return TransactionManager.run(async () => {
+                const newChemist = new Chemist();
+                newChemist.shopPhoto = await this.attachmentService.createAttachment(shopPhoto);
+                newChemist.shopLicence = await this.attachmentService.createAttachment(shopLicence);
+                newChemist.user = await this.userService.createUser(userObj, loggedInUser);
+                this.log.debug('User stored and ready for use.');
+                newChemist.shopPhone = chemist.shopPhone;
+                newChemist.doctorName = chemist.doctorName;
+                newChemist.mrId = chemist.mr;
+                newChemist.speciality = chemist.specialty;
+                newChemist.status = ChemistStatus.ACTIVE;
+
+                return await this.chemistRepository.save(newChemist);
             });
-
-            if (oldChemist) {
-                throw new AppBadRequestError(
-                    ErrorCodes.chemistAlreadyExists.id,
-                    ErrorCodes.chemistAlreadyExists.msg,
-                    { chemist }
-                );
-            }
-
-            const mrs = await this.validateMRs(JSON.parse(chemist.mrIds));
-            chemist.chemistMrs = mrs.map(mr => Object.assign(new ChemistMrs(), {
-                mr,
-                status: ChemistMRStatus.ACTIVE,
-            }));
-
-            const attachment = await this.attachmentService.createAttachment(fileDetails);
-            chemist.attachment = attachment;
-
-            const errors = await validate(chemist);
-
-            if (errors && errors.length) {
-                throw new AppValidationError(
-                    ErrorCodes.chemistValidationFailed.id,
-                    ErrorCodes.chemistValidationFailed.msg,
-                    { chemist }
-                );
-            }
-
-            chemist.createdBy = loggedInUser;
-            return await this.chemistRepository.save(chemist);
         } catch (err) {
             const error = this.classifyError(
                 err,
                 ErrorCodes.chemistCreationFailed.id,
                 ErrorCodes.chemistCreationFailed.msg,
-                { chemist, fileDetails }
+                { chemist, shopPhoto, shopLicence }
             );
             error.log(this.log);
             throw error;
@@ -92,6 +76,7 @@ export class ChemistService extends AppService {
     public async deleteChemist(chemistId: number): Promise<Chemist> {
         try {
             const chemist = await this.chemistRepository.findOne({
+                relations: ['user'],
                 where: {
                     chemistId,
                     status: ChemistStatus.ACTIVE,
@@ -106,8 +91,14 @@ export class ChemistService extends AppService {
                 );
             }
 
-            chemist.status = ChemistStatus.INACTIVE;
-            return await this.chemistRepository.save(chemist);
+            this.log.info(`Deleting chemist with id #${chemistId}`);
+            return await TransactionManager.run(async () => {
+                chemist.user.status = UserStatus.INACTIVE;
+                await this.userRepository.save(chemist.user);
+
+                chemist.status = ChemistStatus.INACTIVE;
+                return await this.chemistRepository.save(chemist);
+            });
         } catch (err) {
             const error = this.classifyError(
                 err,
@@ -120,10 +111,15 @@ export class ChemistService extends AppService {
         }
     }
 
-    public async updateChemist(chemistId: number, chemist: Chemist, fileDetails: File): Promise<Chemist> {
+    public async updateChemist(
+        chemistId: number,
+        chemist: ChemistRequest,
+        shopPhoto: File,
+        shopLicence: File
+    ): Promise<Chemist> {
         try {
             const existingChemist = await this.chemistRepository.findOne({
-                relations: ['attachment', 'chemistMrs'],
+                relations: ['shopPhoto', 'shopLicence'],
                 where: {
                     chemistId,
                     status: ChemistStatus.ACTIVE,
@@ -139,31 +135,35 @@ export class ChemistService extends AppService {
             }
 
             return await TransactionManager.run(async () => {
-                if (fileDetails) {
-                    // Inactivate old attachment
-                    const attachment = existingChemist.attachment;
-                    this.log.info(`Deactivating old attachment. (#${attachment.id})`);
+                if (shopPhoto) {
+                    // Inactivate old shop photo
+                    const attachment = existingChemist.shopPhoto;
+                    this.log.info(`Deactivating old shop photo. (#${attachment.id})`);
                     attachment.status = AttachmentStatus.INACTIVE;
                     // TODO: Move attachment from assets directory to tmp directory.
                     await this.attachmentsRepository.save(attachment);
 
-                    // Insert new attachment
-                    const newAttachment = await this.attachmentService.createAttachment(fileDetails);
-                    existingChemist.attachment = newAttachment;
+                    // Insert new shop photo
+                    const newAttachment = await this.attachmentService.createAttachment(shopPhoto);
+                    existingChemist.shopPhoto = newAttachment;
                 }
 
-                if (chemist.mrIds && JSON.parse(chemist.mrIds).length) {
-                    // Deactivate old mr's
-                    this.log.info('Deactivating old MR\'s and adding new ones.');
-                    await this.chemistMrsRepository.remove(existingChemist.chemistMrs);
+                if (shopLicence) {
+                    // Inactivate old shop licence
+                    const attachment = existingChemist.shopLicence;
+                    this.log.info(`Deactivating old shop licence. (#${attachment.id})`);
+                    attachment.status = AttachmentStatus.INACTIVE;
+                    await this.attachmentsRepository.save(attachment);
 
-                    const mrs = await this.validateMRs(JSON.parse(chemist.mrIds));
-                    existingChemist.chemistMrs = mrs.map(mr => Object.assign(new ChemistMrs(), {
-                        mr,
-                        chemistId,
-                        status: ChemistMRStatus.ACTIVE,
-                    }));
+                    // Insert new shop licence
+                    const newAttachment = await this.attachmentService.createAttachment(shopLicence);
+                    existingChemist.shopLicence = newAttachment;
                 }
+
+                existingChemist.shopPhone = chemist.shopPhone || existingChemist.shopPhone;
+                existingChemist.doctorName = chemist.doctorName || existingChemist.doctorName;
+                existingChemist.mrId = chemist.mr || existingChemist.mrId;
+                existingChemist.speciality = chemist.specialty || existingChemist.speciality;
 
                 return await this.chemistRepository.save(existingChemist);
             });
@@ -179,39 +179,20 @@ export class ChemistService extends AppService {
         }
     }
 
-    private async validateMRs(mrIds: string[]): Promise<User[]> {
-        try {
-            this.log.info('Validating MR\'s.');
-            const MRs = await this.userRepository.find({
-                where: {
-                    userId: In(mrIds),
-                    designation: UserType.MR,
-                    status: UserStatus.ACTIVE,
-                },
-            });
-
-            const userIds = MRs.map(user => user.userId.toString());
-            mrIds = mrIds.map(val => val.toString());
-            const missingMrs = this.compareArrays(mrIds, userIds);
-
-            if (missingMrs && missingMrs.length) {
-                throw new AppBadRequestError(
-                    ErrorCodes.MRsNotFound.id,
-                    ErrorCodes.MRsNotFound.msg,
-                    { missingMrIds: missingMrs }
-                );
-            }
-
-            return MRs;
-        } catch (err) {
-            const error = this.classifyError(
-                err,
-                ErrorCodes.MRValidationFailed.id,
-                ErrorCodes.MRValidationFailed.msg,
-                { mrIds }
-            );
-            error.log(this.log);
-            throw error;
-        }
+    private mapToUser(chemistRequest: ChemistRequest, loggedInUser: User): User {
+        const user = new User();
+        user.name = chemistRequest.name;
+        user.phone = chemistRequest.mobileNo;
+        user.email = chemistRequest.email;
+        user.designation = UserType.CHEMIST;
+        user.headQuarterId = chemistRequest.headQuarter;
+        user.cityId = chemistRequest.city;
+        user.stateId = chemistRequest.state;
+        user.address = chemistRequest.address;
+        user.createdBy = loggedInUser.userId;
+        user.userLoginDetails = new UserLoginDetails();
+        user.userLoginDetails.username = chemistRequest.email;
+        user.userLoginDetails.password = chemistRequest.password || chemistRequest.mobileNo;
+        return user;
     }
 }

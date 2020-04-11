@@ -1,6 +1,5 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Chemist } from './Chemist';
 import { User } from './User';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
@@ -11,9 +10,6 @@ export class States {
 
     @Column({ name: 'name' })
     public name: string;
-
-    @OneToMany(() => Chemist, chemist => chemist.state)
-    public chemists: Chemist[];
 
     @OneToMany(() => User, user => user.state)
     public users: User[];

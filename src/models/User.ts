@@ -5,8 +5,9 @@ import {
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
-import { ChemistMrs } from './ChemistMrs';
+import { City } from './City';
 import { HeadQuarters } from './HeadQuarters';
+import { Mr } from './Mr';
 import { Otp } from './Otp';
 import { Product } from './Product';
 import { States } from './States';
@@ -60,9 +61,8 @@ export class User {
     @Column({ name: 'head_quarter' })
     public headQuarterId: number;
 
-    @IsNotEmpty()
     @Column({ name: 'city' })
-    public city: string;
+    public cityId: number;
 
     @Column({ name: 'state' })
     public stateId: number;
@@ -80,8 +80,11 @@ export class User {
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
 
-    @OneToMany(() => Chemist, chemist => chemist.createdBy)
-    public chemists: Chemist[];
+    @OneToOne(() => Chemist, chemist => chemist.user)
+    public chemist: Chemist;
+
+    @OneToOne(() => Mr, mr => mr.user)
+    public mr: Mr;
 
     @OneToMany(() => Product, product => product.createdByUser)
     public products: Product[];
@@ -100,11 +103,12 @@ export class User {
     @OneToMany(() => UserTokens, userTokens => userTokens.user)
     public userTokens: UserTokens[];
 
-    @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.mr)
-    public chemistMrs: ChemistMrs[];
-
     @OneToMany(() => Otp, otp => otp.user, { cascade: true })
     public otps: Otp[];
+
+    @ManyToOne(() => City, city => city.users)
+    @JoinColumn([{ name: 'city', referencedColumnName: 'id' }])
+    public city: City;
 
     @BeforeInsert()
     public filterPhone(): void {

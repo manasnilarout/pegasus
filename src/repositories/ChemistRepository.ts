@@ -10,11 +10,15 @@ import QueryHelper from './helpers/QueryHelper';
 export class ChemistRepository extends Repository<Chemist> implements AppFindRepository<Chemist>  {
     public async findAll(findOptions?: ChemistFindRequest): Promise<FindResponse<Chemist>> {
         const queryBuilder = await this.createQueryBuilder('chemist');
-        queryBuilder.leftJoinAndSelect('chemist.chemistMrs', 'chemistMrs');
-        queryBuilder.leftJoinAndSelect('chemistMrs.mr', 'mr');
-        queryBuilder.leftJoinAndSelect('chemist.attachment', 'attachment');
-        queryBuilder.leftJoinAndSelect('chemist.headQuarter', 'headQuarter');
-        queryBuilder.leftJoinAndSelect('chemist.state', 'state');
+        queryBuilder.leftJoinAndSelect('chemist.user', 'user');
+        queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
+        queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');
+        queryBuilder.leftJoinAndSelect('chemist.shopLicence', 'shopLicence');
+        queryBuilder.leftJoinAndSelect('chemist.shopPhoto', 'shopPhoto');
+        queryBuilder.leftJoinAndSelect('chemist.chemistSpeciality', 'chemistSpeciality');
+        queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
+        queryBuilder.leftJoinAndSelect('user.city', 'city');
+        queryBuilder.leftJoinAndSelect('user.state', 'state');
         queryBuilder.select();
 
         // Use query helper to build the query

@@ -1,13 +1,12 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import {
-    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn
+    BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn,
+    PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
 
 import { Attachments } from './Attachments';
-import { ChemistMrs } from './ChemistMrs';
-import { HeadQuarters } from './HeadQuarters';
+import { Mr } from './Mr';
 import { Specialty } from './Specialty';
-import { States } from './States';
 import { User } from './User';
 
 export enum ChemistStatus {
@@ -17,86 +16,66 @@ export enum ChemistStatus {
 
 @Entity('chemist')
 export class Chemist {
-    @PrimaryGeneratedColumn({ type: 'int', name: 'chemist_id' })
-    public chemistId: number;
+    @PrimaryGeneratedColumn({ name: 'id' })
+    public id: number;
+
+    @PrimaryColumn({ name: 'user_id' })
+    public userId: string;
 
     @IsNotEmpty()
-    @Column({ name: 'name' })
-    public name: string;
-
-    @IsNotEmpty()
-    @IsPhoneNumber('IN')
-    @Column({ name: 'mobile' })
-    public mobile: string;
-
-    @Column({ name: 'head_quarter' })
-    public headQuarterId: number;
-
-    @IsEmail()
-    @IsOptional()
-    @Column({ name: 'email' })
-    public email: string | null;
-
-    @IsPhoneNumber('IN')
-    @IsOptional()
     @Column({ name: 'shop_phone' })
-    public shopPhone: string | null;
+    public shopPhone: string;
 
-    @IsNotEmpty()
-    @Column({ name: 'address' })
-    public address: string;
-
-    @IsNotEmpty()
-    @Column({ name: 'city' })
-    public city: string;
-
-    @Column({ name: 'state' })
-    public stateId: number;
-
-    @IsNotEmpty()
-    @Column({ name: 'pin' })
-    public pin: string;
+    @IsOptional()
+    @Column({ name: 'mr_id' })
+    public mrId: number;
 
     @IsOptional()
     @Column({ name: 'doctor_name' })
     public doctorName: string | null;
 
     @IsOptional()
-    @Column({ name: 'chemist_speciality' })
-    public chemistSpecialityId: number | null;
+    @Column({ name: 'speciality' })
+    public speciality: number | null;
 
+    @Column({ name: 'shop_photo' })
+    public shopPhotoId: string;
+
+    @Column({ name: 'shop_licence' })
+    public shopLicenceId: string;
+
+    @IsNotEmpty()
     @Column({ name: 'status' })
     public status: ChemistStatus;
 
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
 
-    @Column({ name: 'created_by' })
-    public createdById: string;
+    @UpdateDateColumn({ name: 'updated_on' })
+    public updatedOn: Date | null;
+
+    @ManyToOne(() => Attachments, attachments => attachments.chemistLicence)
+    @JoinColumn([{ name: 'shop_licence', referencedColumnName: 'id' }])
+    public shopLicence: Attachments;
+
+    @ManyToOne(() => Attachments, attachments => attachments.chemistPhotos)
+    @JoinColumn([{ name: 'shop_photo', referencedColumnName: 'id' }])
+    public shopPhoto: Attachments;
+
+    @ManyToOne(() => Mr, mr => mr.chemists)
+    @JoinColumn([{ name: 'mr_id', referencedColumnName: 'id' }])
+    public mr: Mr;
 
     @ManyToOne(() => Specialty, specialty => specialty.chemists)
-    @JoinColumn([{ name: 'chemist_speciality', referencedColumnName: 'id' }])
+    @JoinColumn([{ name: 'speciality', referencedColumnName: 'id' }])
     public chemistSpeciality: Specialty;
 
-    @ManyToOne(() => User, user => user.chemists)
-    @JoinColumn([{ name: 'created_by', referencedColumnName: 'userId' }])
-    public createdBy: User;
+    @OneToOne(() => User, user => user.chemist)
+    @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
+    public user: User;
 
-    @ManyToOne(() => HeadQuarters, headQuarters => headQuarters.chemists)
-    @JoinColumn([{ name: 'head_quarter', referencedColumnName: 'id' }])
-    public headQuarter: HeadQuarters;
-
-    @ManyToOne(() => States, states => states.chemists)
-    @JoinColumn([{ name: 'state', referencedColumnName: 'id' }])
-    public state: States;
-
-    @ManyToOne(() => Attachments, attachments => attachments.chemists)
-    @JoinColumn([{ name: 'attachment_id', referencedColumnName: 'id' }])
-    public attachment: Attachments;
-
-    @OneToMany(() => ChemistMrs, chemistMrs => chemistMrs.chemist, { cascade: true })
-    public chemistMrs: ChemistMrs[];
-
-    // Added this for accepting mr id's during API request
-    public mrIds: string;
+    @BeforeInsert()
+    public filterPhone(): void {
+        this.shopPhone = User.filterPhoneNumber(this.shopPhone);
+    }
 }

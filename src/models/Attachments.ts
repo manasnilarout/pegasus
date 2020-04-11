@@ -31,8 +31,11 @@ export class Attachments {
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
 
-    @OneToMany(() => Chemist, chemist => chemist.attachment)
-    public chemists: Chemist[];
+    @OneToMany(() => Chemist, chemist => chemist.shopLicence)
+    public chemistLicence: Chemist[];
+
+    @OneToMany(() => Chemist, chemist => chemist.shopPhoto)
+    public chemistPhotos: Chemist[];
 
     @BeforeInsert()
     public generateFileUrl(): void {

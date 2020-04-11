@@ -39,8 +39,6 @@ export class UserLoginDetails {
 
     @BeforeInsert()
     public async setPassword(): Promise<void> {
-        console.log('BEFORE INSERT');
         this.password = await UserLoginDetails.encryptUserPassword(this.password);
-        console.log(this.password);
     }
 }

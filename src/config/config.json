@@ -30,7 +30,9 @@
         "expiredKeyCode": -2
     },
     "otp": {
-        "otpExpiryTimeInMinutes": 15
+        "otpExpiryTimeInMinutes": 15,
+        "otpCharacters": "0123456789",
+        "otpSize": 6
     },
     "prometheusMetricsOption": {
         "metricsPath": "/metrics",
