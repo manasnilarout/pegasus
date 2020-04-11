@@ -1,7 +1,7 @@
 import multer from 'multer';
 import {
     Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParams, Req,
-    UploadedFile, UseBefore
+    UseBefore
 } from 'routing-controllers';
 
 import { DefaultFileUploadConfig } from '../../../config';
@@ -62,7 +62,7 @@ export class ChemistController {
             Number(chemistId),
             chemist,
             req.files.shopLicence[0],
-            req.files.shopPhoto[0],
+            req.files.shopPhoto[0]
         );
     }
 }
