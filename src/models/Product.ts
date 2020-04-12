@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import {
     Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn
 } from 'typeorm';
@@ -21,9 +21,13 @@ export class Product {
     @Column({ name: 'name' })
     public name: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @Column({ name: 'brand' })
     public brand: string | null;
+
+    @IsNotEmpty()
+    @Column({ name: 'product_name' })
+    public productName: string;
 
     @IsNotEmpty()
     @Column({ name: 'active_ingredients' })

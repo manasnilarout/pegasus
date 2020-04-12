@@ -5,6 +5,11 @@ import {
 import { Chemist } from './Chemist';
 import { User } from './User';
 
+export enum MRStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('mr')
 export class Mr {
     @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -14,7 +19,7 @@ export class Mr {
     public userId: string;
 
     @Column({ name: 'status' })
-    public status: number;
+    public status: MRStatus;
 
     @Column({ name: 'created_on' })
     public createdOn: Date;

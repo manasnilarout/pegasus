@@ -83,7 +83,7 @@ export class User {
     @OneToOne(() => Chemist, chemist => chemist.user)
     public chemist: Chemist;
 
-    @OneToOne(() => Mr, mr => mr.user)
+    @OneToOne(() => Mr, mr => mr.user, { cascade: ['insert', 'update'] })
     public mr: Mr;
 
     @OneToMany(() => Product, product => product.createdByUser)

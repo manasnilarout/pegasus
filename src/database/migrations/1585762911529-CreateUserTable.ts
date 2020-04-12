@@ -22,7 +22,6 @@ export class CreateUserTable1585762911529 implements MigrationInterface {
             UNIQUE INDEX \`user_id_UNIQUE\` (\`user_id\` ASC),
             INDEX \`fk_head_quarter_head_quarter_id_idx\` (\`head_quarter\` ASC),
             INDEX \`fk_state_state_id_idx\` (\`state\` ASC),
-            UNIQUE INDEX \`created_by_UNIQUE\` (\`created_by\` ASC),
             CONSTRAINT \`fk_head_quarter_head_quarter_id\`
               FOREIGN KEY (\`head_quarter\`)
               REFERENCES \`head_quarters\` (\`id\`)

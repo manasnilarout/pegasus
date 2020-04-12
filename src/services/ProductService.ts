@@ -24,6 +24,7 @@ export class ProductService extends AppService {
 
     public async createProduct(product: Product, loggedInUser: User): Promise<Product> {
         try {
+            product.productName = `${product.brand} ${product.name}`.trim();
             await this.validateProduct(product);
             product.createdByUser = loggedInUser;
             return await this.productRepository.save(product);
@@ -85,6 +86,7 @@ export class ProductService extends AppService {
                 );
             }
 
+            existingProduct.productName = `${product.brand || existingProduct.brand} ${product.name || existingProduct.name}`.trim();
             await this.validateProduct(product);
             return await this.productRepository.save(product);
         } catch (err) {

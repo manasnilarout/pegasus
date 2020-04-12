@@ -67,6 +67,14 @@ const UserErrorCodes = {
         id: 'received-invalid-otp',
         msg: ' Received invalid OTP.',
     },
+    onlyMRCreationIsAllowed: {
+        id: 'only-MR-creation-is-allowed',
+        msg: 'Only MR creation is allowed.',
+    },
+    userNotMR: {
+        id: 'user-not-MR',
+        msg: 'User is not an MR.',
+    },
 };
 
 export { UserErrorCodes };

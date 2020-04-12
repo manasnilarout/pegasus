@@ -11,7 +11,10 @@ export class UserRepository extends Repository<User> implements AppFindRepositor
     public async findAll(findOptions?: UserFindRequest): Promise<FindResponse<User>> {
         const queryBuilder = await this.createQueryBuilder('user');
         queryBuilder.leftJoinAndSelect('user.state', 'state');
+        queryBuilder.leftJoinAndSelect('user.city', 'city');
         queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
+        queryBuilder.leftJoinAndSelect('user.chemist', 'chemist');
+        queryBuilder.leftJoinAndSelect('user.mr', 'mr');
         queryBuilder.select();
 
         // Use query helper to build the query

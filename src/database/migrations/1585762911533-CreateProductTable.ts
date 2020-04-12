@@ -8,6 +8,7 @@ export class CreateProductTable1585762911533 implements MigrationInterface {
             \`id\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             \`name\` VARCHAR(45) NOT NULL,
             \`brand\` VARCHAR(45) NULL,
+            \`product_name\` VARCHAR(150) NULL,
             \`active_ingredients\` VARCHAR(200) NULL,
             \`product_type\` INT UNSIGNED NOT NULL,
             \`pack_type\` INT UNSIGNED NOT NULL,

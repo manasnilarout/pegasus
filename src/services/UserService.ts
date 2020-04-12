@@ -16,10 +16,12 @@ import {
     AppBadRequestError, AppNotFoundError, AppRuntimeError, AppUnauthorizedError, AppValidationError
 } from '../errors';
 import { UserErrorCodes as ErrorCodes } from '../errors/codes';
+import { Mr, MRStatus } from '../models/Mr';
 import { Otp, OTPReason, OTPStatus } from '../models/Otp';
-import { User, UserStatus } from '../models/User';
+import { User, UserStatus, UserType } from '../models/User';
 import { UserLoginDetails } from '../models/UserLoginDetails';
 import { UserTokens, UserTokenStatus } from '../models/UserTokens';
+import { MrRepository } from '../repositories/MRRepository';
 import { OtpRepository } from '../repositories/OTPRepository';
 import { UserLoginDetailsRepository } from '../repositories/UserLoginDetailsRepository';
 import { UserRepository } from '../repositories/UserRepository';
@@ -55,6 +57,7 @@ export class UserService extends AppService {
         @OrmRepository() private userRepository: UserRepository,
         @OrmRepository() private userLoginDetailsRepository: UserLoginDetailsRepository,
         @OrmRepository() private userTokensRepository: UserTokensRepository,
+        @OrmRepository() private mrRepository: MrRepository,
         @OrmRepository() private otpRepository: OtpRepository
     ) {
         super();
@@ -98,6 +101,17 @@ export class UserService extends AppService {
             // TODO: This need to be removed once below bug is fixed.
             // https://github.com/typeorm/typeorm/issues/4209
             user.userLoginDetails.password = await UserLoginDetails.encryptUserPassword(user.userLoginDetails.password);
+
+            if (user.designation !== UserType.MR) {
+                throw new AppBadRequestError(
+                    ErrorCodes.onlyMRCreationIsAllowed.id,
+                    ErrorCodes.onlyMRCreationIsAllowed.msg,
+                    { user }
+                );
+            }
+
+            user.mr = new Mr();
+            user.mr.status = MRStatus.ACTIVE;
 
             this.log.debug(`Validating user.`);
             await this.validateUser(user);
@@ -198,7 +212,23 @@ export class UserService extends AppService {
 
     public async deactivateUser(userId: number): Promise<User> {
         try {
-            const user = await this.userRepository.findOne(userId);
+            const user = await this.userRepository.findOne({
+                relations: ['mr'],
+                where: { userId },
+            });
+
+            if (!user.mr) {
+                throw new AppBadRequestError(
+                    ErrorCodes.userNotMR.id,
+                    ErrorCodes.userNotMR.msg,
+                    { userId }
+                );
+            }
+
+            // Deactivate MR details
+            user.mr.status = MRStatus.INACTIVE;
+            await this.mrRepository.save(user.mr);
+            delete user.mr;
 
             if (!user) {
                 this.userNotFoundError(userId);

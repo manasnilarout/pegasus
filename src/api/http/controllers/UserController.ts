@@ -21,7 +21,7 @@ export class UserController {
 
     @Authorized()
     @Post()
-    public async createMR(@Body() user: User, @CurrentUser() loggedInUser: User): Promise<User> {
+    public async createUser(@Body() user: User, @CurrentUser() loggedInUser: User): Promise<User> {
         return await this.userService.createUser(user, loggedInUser);
     }
 
