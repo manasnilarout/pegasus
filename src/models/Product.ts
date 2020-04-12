@@ -1,10 +1,11 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import {
-    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn
+    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn
 } from 'typeorm';
 
 import { PackType } from './PackType';
 import { ProductType } from './ProductType';
+import { QrPoints } from './QrPoints';
 import { User } from './User';
 
 export enum ProductStatus {
@@ -63,4 +64,7 @@ export class Product {
     @ManyToOne(() => ProductType, productType => productType.products)
     @JoinColumn([{ name: 'product_type', referencedColumnName: 'id' }])
     public productType: ProductType;
+
+    @OneToMany(() => QrPoints, qrPoints => qrPoints.product)
+    public qrPoints: QrPoints[];
 }

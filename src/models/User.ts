@@ -10,6 +10,7 @@ import { HeadQuarters } from './HeadQuarters';
 import { Mr } from './Mr';
 import { Otp } from './Otp';
 import { Product } from './Product';
+import { QrPoints } from './QrPoints';
 import { States } from './States';
 import { UserLoginDetails } from './UserLoginDetails';
 import { UserTokens } from './UserTokens';
@@ -109,6 +110,9 @@ export class User {
     @ManyToOne(() => City, city => city.users)
     @JoinColumn([{ name: 'city', referencedColumnName: 'id' }])
     public city: City;
+
+    @OneToMany(() => QrPoints, qrPoints => qrPoints.createdBy)
+    public qrPoints: QrPoints[];
 
     @BeforeInsert()
     public filterPhone(): void {
