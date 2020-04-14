@@ -9,7 +9,8 @@
     },
     "dirs": {
         "tmp": {
-            "upload": "/uploads"
+            "upload": "/uploads",
+            "qr": "/qr"
         },
         "pdf": "/pdf",
         "sms": "/sms",

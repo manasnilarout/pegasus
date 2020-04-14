@@ -5,6 +5,7 @@ import {
 import { env } from '../env';
 import { getFileName } from '../utils/file.util';
 import { Chemist } from './Chemist';
+import { QrPoints } from './QrPoints';
 
 export enum AttachmentStatus {
     ACTIVE = 1,
@@ -36,6 +37,9 @@ export class Attachments {
 
     @OneToMany(() => Chemist, chemist => chemist.shopPhoto)
     public chemistPhotos: Chemist[];
+
+    @OneToMany(() => QrPoints, qrPoints => qrPoints.attachment)
+    public qrPoints: QrPoints[];
 
     @BeforeInsert()
     public generateFileUrl(): void {

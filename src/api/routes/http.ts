@@ -24,3 +24,9 @@ export const Chemist = {
     BASE: '/chemist',
     ID: '/:chemistId',
 };
+
+export const QR  = {
+    BASE: '/qr',
+    ID: '/batch-number/:batchNumber/batch-quantity/:batchQuantity',
+    DOWNLOAD: '/:id/download',
+};

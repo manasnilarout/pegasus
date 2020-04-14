@@ -21,7 +21,7 @@ export class AttachmentService extends AppService {
         super();
     }
 
-    public async createAttachment(file: File, fileName?: string): Promise<Attachments> {
+    public async createAttachment(file: Partial<File>, fileName?: string): Promise<Attachments> {
         try {
             fileName = fileName || nanoid(8);
             const path = await moveFile(file.path, env.app.dirs.attachment, fileName);

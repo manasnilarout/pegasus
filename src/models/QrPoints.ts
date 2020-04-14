@@ -1,40 +1,56 @@
 import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty } from 'class-validator';
 import {
     Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn,
     UpdateDateColumn
 } from 'typeorm';
 
+import { Attachments } from './Attachments';
 import { HqQrPoints } from './HqQrPoints';
 import { Product } from './Product';
 import { User } from './User';
 
+export enum QrPointsStatus {
+    USED = 0,
+    ACTIVE = 1,
+    EXPIRED = 2,
+}
+
 @Entity('qr_points')
 export class QrPoints {
+    @IsNotEmpty()
     @PrimaryColumn({ name: 'id' })
     public id: string;
 
+    @IsNotEmpty()
     @PrimaryColumn({ name: 'batch_number' })
     public batchNumber: string;
 
+    @IsNotEmpty()
     @PrimaryColumn({ name: 'batch_quantity' })
     public batchQuantity: number;
 
     @Column({ name: 'product_id' })
     public productId: string;
 
+    @IsNotEmpty()
     @Column({ name: 'points' })
     public points: number;
 
+    @IsNotEmpty()
+    @IsDate()
     @Column({ name: 'valid_from' })
     @Type(() => Date)
     public validFrom: Date;
 
+    @IsNotEmpty()
+    @IsDate()
     @Column({ name: 'valid_till' })
     @Type(() => Date)
     public validTill: Date;
 
     @Column({ name: 'status' })
-    public status: number;
+    public status: QrPointsStatus;
 
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
@@ -55,4 +71,8 @@ export class QrPoints {
     @ManyToOne(() => Product, product => product.qrPoints)
     @JoinColumn([{ name: 'product_id', referencedColumnName: 'id' }])
     public product: Product;
+
+    @ManyToOne(() => Attachments, attachments => attachments.qrPoints)
+    @JoinColumn([{ name: 'attachment_id', referencedColumnName: 'id' }])
+    public attachment: Attachments;
 }
