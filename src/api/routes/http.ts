@@ -30,3 +30,8 @@ export const QR  = {
     ID: '/batch-number/:batchNumber/batch-quantity/:batchQuantity',
     DOWNLOAD: '/:id/download',
 };
+
+export const HqQr = {
+    BASE: '/hq-qr',
+    ID: '/:hqQrId',
+};

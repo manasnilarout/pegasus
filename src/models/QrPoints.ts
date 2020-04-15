@@ -61,7 +61,7 @@ export class QrPoints {
     @Column({ name: 'created_by' })
     public createdById: string;
 
-    @OneToMany(() => HqQrPoints, hqQrPoints => hqQrPoints.qrPoints)
+    @OneToMany(() => HqQrPoints, hqQrPoints => hqQrPoints.qrPoint)
     public hqQrPoints: HqQrPoints[];
 
     @ManyToOne(() => User, user => user.qrPoints)

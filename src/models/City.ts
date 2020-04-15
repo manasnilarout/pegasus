@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { User } from './User';
 
-@Entity('city', { schema: 'pegasus_db' })
+@Entity('city')
 export class City {
     @PrimaryGeneratedColumn({ name: 'id' })
     public id: number;

@@ -19,8 +19,7 @@ export class QrPointsRepository extends Repository<QrPoints> implements AppFindR
         QueryHelper.buildQuery(queryBuilder, findOptions);
         // Run the query
         const facilityEventDetails = await queryBuilder.getManyAndCount();
-        return QueryHelper.buildResponse(facilityEventDetails, findOptions.limit,
-            findOptions.start);
+        return QueryHelper.buildResponse(facilityEventDetails, findOptions.limit, findOptions.start);
     }
 
     public async insertMultiple(qrs: QrPoints[]): Promise<void> {

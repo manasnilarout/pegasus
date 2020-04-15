@@ -25,8 +25,7 @@ export class ChemistRepository extends Repository<Chemist> implements AppFindRep
         QueryHelper.buildQuery(queryBuilder, findOptions);
         // Run the query
         const facilityEventDetails = await queryBuilder.getManyAndCount();
-        return QueryHelper.buildResponse(facilityEventDetails, findOptions.limit,
-            findOptions.start);
+        return QueryHelper.buildResponse(facilityEventDetails, findOptions.limit, findOptions.start);
     }
 
     public findList(findOptions?: ChemistFindRequest): Promise<FindResponse<Chemist>> {

@@ -6,6 +6,7 @@ export class CreateHQQRPointsTable1586718844383 implements MigrationInterface {
         CREATE TABLE IF NOT EXISTS \`hq_qr_points\` (
             \`id\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             \`qr_points_id\` VARCHAR(45) NOT NULL,
+            \`hq_id\` INT UNSIGNED NOT NULL,
             \`hq_qr_points\` INT NOT NULL,
             \`status\` TINYINT NOT NULL DEFAULT 1,
             \`created_on\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

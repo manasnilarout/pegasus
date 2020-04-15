@@ -5,3 +5,4 @@ export * from './ProductErrorCodes';
 export * from './ChemistErrorCodes';
 export * from './AttachmentErrorCodes';
 export * from './QrPointErrorCodes';
+export * from './HqQrPointErrorCodes';

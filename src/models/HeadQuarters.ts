@@ -1,5 +1,6 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
+import { HqQrPoints } from './HqQrPoints';
 import { User } from './User';
 
 @Index('id_UNIQUE', ['id'], { unique: true })
@@ -13,4 +14,7 @@ export class HeadQuarters {
 
     @OneToMany(() => User, user => user.headQuarter)
     public users: User[];
+
+    @OneToMany(() => HqQrPoints, hqQrPoints => hqQrPoints.hq)
+    public hqQrPoints: HqQrPoints[];
 }

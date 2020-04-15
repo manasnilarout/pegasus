@@ -21,11 +21,10 @@ export class UserRepository extends Repository<User> implements AppFindRepositor
         QueryHelper.buildQuery(queryBuilder, findOptions);
         // Run the query
         const facilityEventDetails = await queryBuilder.getManyAndCount();
-        return QueryHelper.buildResponse(facilityEventDetails, findOptions.limit,
-            findOptions.start);
+        return QueryHelper.buildResponse(facilityEventDetails, findOptions.limit, findOptions.start);
     }
 
     public findList(findOptions?: UserFindRequest): Promise<FindResponse<User>> {
         throw new Error('Method not implemented.');
     }
- }
+}
