@@ -6,6 +6,7 @@ import {
 } from 'typeorm';
 
 import { Attachments } from './Attachments';
+import { ChemistQrPoint } from './ChemistQrPoint';
 import { HqQrPoints } from './HqQrPoints';
 import { Product } from './Product';
 import { User } from './User';
@@ -75,4 +76,7 @@ export class QrPoints {
     @ManyToOne(() => Attachments, attachments => attachments.qrPoints)
     @JoinColumn([{ name: 'attachment_id', referencedColumnName: 'id' }])
     public attachment: Attachments;
+
+    @OneToMany(() => ChemistQrPoint, chemistQrPoint => chemistQrPoint.qr)
+    public chemistQrPoints: ChemistQrPoint[];
 }

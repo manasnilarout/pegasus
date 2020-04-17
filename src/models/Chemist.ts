@@ -1,10 +1,12 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import {
-    BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn,
-    PrimaryGeneratedColumn, UpdateDateColumn
+    BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne,
+    PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
 
 import { Attachments } from './Attachments';
+import { ChemistQrPoint } from './ChemistQrPoint';
+import { ChemistRedemptions } from './ChemistRedemptions';
 import { Mr } from './Mr';
 import { Specialty } from './Specialty';
 import { User } from './User';
@@ -73,6 +75,12 @@ export class Chemist {
     @OneToOne(() => User, user => user.chemist)
     @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
     public user: User;
+
+    @OneToMany(() => ChemistQrPoint, chemistQrPoint => chemistQrPoint.chemist)
+    public chemistQrPoints: ChemistQrPoint[];
+
+    @OneToMany(() => ChemistRedemptions, chemistRedemptions => chemistRedemptions.chemist)
+    public chemistRedemptions: ChemistRedemptions[];
 
     @BeforeInsert()
     public filterPhone(): void {

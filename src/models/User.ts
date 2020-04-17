@@ -5,6 +5,8 @@ import {
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
+import { ChemistQrPoint } from './ChemistQrPoint';
+import { ChemistRedemptions } from './ChemistRedemptions';
 import { City } from './City';
 import { HeadQuarters } from './HeadQuarters';
 import { Mr } from './Mr';
@@ -113,6 +115,12 @@ export class User {
 
     @OneToMany(() => QrPoints, qrPoints => qrPoints.createdBy)
     public qrPoints: QrPoints[];
+
+    @OneToMany(() => ChemistQrPoint, chemistQrPoint => chemistQrPoint.createdBy)
+    public chemistQrPoints: ChemistQrPoint[];
+
+    @OneToMany(() => ChemistRedemptions, chemistRedemptions => chemistRedemptions.initiatedBy)
+    public chemistRedemptions: ChemistRedemptions[];
 
     @BeforeInsert()
     public filterPhone(): void {
