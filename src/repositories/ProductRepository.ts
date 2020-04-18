@@ -9,7 +9,7 @@ import QueryHelper from './helpers/QueryHelper';
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> implements AppFindRepository<Product>  {
     public async findAll(findOptions?: ProductFindRequest): Promise<FindResponse<Product>> {
-        const queryBuilder = await this.createQueryBuilder('product');
+        const queryBuilder = this.createQueryBuilder('product');
         queryBuilder.leftJoinAndSelect('product.packType', 'packType');
         queryBuilder.leftJoinAndSelect('product.productType', 'productType');
         queryBuilder.select();

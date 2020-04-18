@@ -1,20 +1,21 @@
 import { Type } from 'class-transformer';
 import { IsDate, IsNotEmpty } from 'class-validator';
 import {
-    Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn,
+    AfterLoad, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn,
     UpdateDateColumn
 } from 'typeorm';
 
 import { Attachments } from './Attachments';
 import { ChemistQrPoint } from './ChemistQrPoint';
-import { HqQrPoints } from './HqQrPoints';
+import { HqQrPoints, HqQrPointStatus } from './HqQrPoints';
 import { Product } from './Product';
 import { User } from './User';
 
 export enum QrPointsStatus {
     USED = 0,
     ACTIVE = 1,
-    EXPIRED = 2,
+    ALLOTTED = 2,
+    EXPIRED = 3,
 }
 
 @Entity('qr_points')
@@ -79,4 +80,14 @@ export class QrPoints {
 
     @OneToMany(() => ChemistQrPoint, chemistQrPoint => chemistQrPoint.qr)
     public chemistQrPoints: ChemistQrPoint[];
+
+    @AfterLoad()
+    public updatePoints(): void {
+        if (!this.hqQrPoints || !this.hqQrPoints.length) {
+            return;
+        }
+
+        const activeHqQr = this.hqQrPoints.find(hqQr => hqQr.status === HqQrPointStatus.ACTIVE);
+        this.points = activeHqQr ? activeHqQr.hqQrPoints : this.points;
+    }
 }

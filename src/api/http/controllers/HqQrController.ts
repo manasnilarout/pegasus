@@ -10,7 +10,7 @@ import FindResponse from '../../response/FindResponse';
 import { HqQr as Route } from '../../routes/http';
 
 @JsonController(Route.BASE)
-export class QRController {
+export class HqQrController {
     constructor(
         private hqQrService: HqQrService
     ) { }

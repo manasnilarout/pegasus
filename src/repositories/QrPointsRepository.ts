@@ -9,7 +9,7 @@ import QueryHelper from './helpers/QueryHelper';
 @EntityRepository(QrPoints)
 export class QrPointsRepository extends Repository<QrPoints> implements AppFindRepository<QrPoints>  {
     public async findAll(findOptions?: QrPointsFindRequest): Promise<FindResponse<QrPoints>> {
-        const queryBuilder = await this.createQueryBuilder('qrPoints');
+        const queryBuilder = this.createQueryBuilder('qrPoints');
         queryBuilder.leftJoinAndSelect('qrPoints.hqQrPoints', 'hqQrPoints');
         queryBuilder.leftJoinAndSelect('qrPoints.product', 'product');
         queryBuilder.leftJoinAndSelect('qrPoints.attachment', 'attachment');

@@ -9,7 +9,7 @@ import QueryHelper from './helpers/QueryHelper';
 @EntityRepository(Chemist)
 export class ChemistRepository extends Repository<Chemist> implements AppFindRepository<Chemist>  {
     public async findAll(findOptions?: ChemistFindRequest): Promise<FindResponse<Chemist>> {
-        const queryBuilder = await this.createQueryBuilder('chemist');
+        const queryBuilder = this.createQueryBuilder('chemist');
         queryBuilder.leftJoinAndSelect('chemist.user', 'user');
         queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
         queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');

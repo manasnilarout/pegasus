@@ -3,6 +3,7 @@ import {
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
+import { ChemistQrPoint } from './ChemistQrPoint';
 import { User } from './User';
 
 @Entity('chemist_redemptions')
@@ -12,6 +13,12 @@ export class ChemistRedemptions {
 
     @Column({ name: 'chemist_id' })
     public chemistId: number;
+
+    @Column({ name: 'chemist_qr_point_id' })
+    public chemistQrPointId: number;
+
+    @Column({ name: 'points' })
+    public points: number;
 
     @CreateDateColumn({ name: 'redeemed_on' })
     public redeemedOn: Date;
@@ -26,4 +33,8 @@ export class ChemistRedemptions {
     @ManyToOne(() => User, user => user.chemistRedemptions)
     @JoinColumn([{ name: 'initiated_by', referencedColumnName: 'userId' }])
     public initiatedBy: User;
+
+    @ManyToOne(() => ChemistQrPoint, chemistQrPoint => chemistQrPoint.chemistRedemptions)
+    @JoinColumn([{ name: 'chemist_qr_point_id', referencedColumnName: 'id' }])
+    public chemistQr: ChemistQrPoint;
 }

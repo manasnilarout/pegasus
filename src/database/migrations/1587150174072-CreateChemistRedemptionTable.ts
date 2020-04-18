@@ -6,12 +6,15 @@ export class CreateChemistRedemptionTable1587150174072 implements MigrationInter
         CREATE TABLE IF NOT EXISTS \`chemist_redemptions\` (
             \`id\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             \`chemist_id\` INT UNSIGNED NOT NULL,
+            \`chemist_qr_point_id\` INT UNSIGNED NULL,
+            \`points\` INT NOT NULL DEFAULT '0',
             \`redeemed_on\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             \`initiated_by\` BIGINT UNSIGNED NOT NULL,
             PRIMARY KEY (\`id\`),
             UNIQUE INDEX \`id_UNIQUE\` (\`id\` ASC),
             INDEX \`fk_chemist_redemption_chemist_id_idx\` (\`chemist_id\` ASC),
             INDEX \`fk_chemist_redemption_initiated_by_idx\` (\`initiated_by\` ASC),
+            INDEX \`fk_chemist_redemption_chemist_qr_point_id_idx\` (\`chemist_qr_point_id\` ASC),
             CONSTRAINT \`fk_chemist_redemption_chemist_id\`
               FOREIGN KEY (\`chemist_id\`)
               REFERENCES \`chemist\` (\`id\`)
@@ -20,6 +23,11 @@ export class CreateChemistRedemptionTable1587150174072 implements MigrationInter
             CONSTRAINT \`fk_chemist_redemption_initiated_by\`
               FOREIGN KEY (\`initiated_by\`)
               REFERENCES \`user\` (\`user_id\`)
+              ON DELETE NO ACTION
+              ON UPDATE NO ACTION,
+            CONSTRAINT \`fk_chemist_redemption_chemist_qr_point_id\`
+              FOREIGN KEY (\`chemist_qr_point_id\`)
+              REFERENCES \`chemist_qr_point\` (\`id\`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION)
           ENGINE = InnoDB

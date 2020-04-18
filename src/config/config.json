@@ -35,6 +35,9 @@
         "otpCharacters": "0123456789",
         "otpSize": 6
     },
+    "thresholds": {
+        "chemistMinPoints": 1000
+    },
     "prometheusMetricsOption": {
         "metricsPath": "/metrics",
         "defaultMetricsInterval": 10000,

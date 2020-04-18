@@ -46,6 +46,9 @@ export class Chemist {
     @Column({ name: 'shop_licence' })
     public shopLicenceId: string;
 
+    @Column({ name: 'points' })
+    public points: number | null;
+
     @IsNotEmpty()
     @Column({ name: 'status' })
     public status: ChemistStatus;

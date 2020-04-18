@@ -6,3 +6,4 @@ export * from './ChemistErrorCodes';
 export * from './AttachmentErrorCodes';
 export * from './QrPointErrorCodes';
 export * from './HqQrPointErrorCodes';
+export * from './PointErrorCodes';

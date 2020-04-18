@@ -25,8 +25,9 @@ export const Chemist = {
     ID: '/:chemistId',
 };
 
-export const QR  = {
+export const QR = {
     BASE: '/qr',
+    QR_ID: '/:qrId',
     ID: '/batch-number/:batchNumber/batch-quantity/:batchQuantity',
     DOWNLOAD: '/:id/download',
 };
@@ -34,4 +35,19 @@ export const QR  = {
 export const HqQr = {
     BASE: '/hq-qr',
     ID: '/:hqQrId',
+};
+
+export const Point = {
+    BASE: '/point',
+    get SCAN(): string {
+        return `/scan${Chemist.BASE}${Chemist.ID}${QR.BASE}${QR.QR_ID}`;
+    },
+    REDEEM: '/redeem',
+    get REDEEM_QR(): string {
+        return `${this.REDEEM}${Chemist.BASE}${Chemist.ID}${QR.BASE}${QR.QR_ID}`;
+    },
+    get REDEEM_POINTS(): string {
+        return `${this.REDEEM}${Chemist.BASE}${Chemist.ID}` + '([0-9]+$)';
+    },
+    REDEMPTION: '/redemption',
 };

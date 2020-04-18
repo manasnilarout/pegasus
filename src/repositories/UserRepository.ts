@@ -9,7 +9,7 @@ import QueryHelper from './helpers/QueryHelper';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> implements AppFindRepository<User>  {
     public async findAll(findOptions?: UserFindRequest): Promise<FindResponse<User>> {
-        const queryBuilder = await this.createQueryBuilder('user');
+        const queryBuilder = this.createQueryBuilder('user');
         queryBuilder.leftJoinAndSelect('user.state', 'state');
         queryBuilder.leftJoinAndSelect('user.city', 'city');
         queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
