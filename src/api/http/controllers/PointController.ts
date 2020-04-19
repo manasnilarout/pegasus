@@ -4,6 +4,7 @@ import {
 
 import { ChemistQrPoint } from '../../../models/ChemistQrPoint';
 import { ChemistRedemptions } from '../../../models/ChemistRedemptions';
+import { Otp } from '../../../models/Otp';
 import { User } from '../../../models/User';
 import { PointService } from '../../../services/PointService';
 import ChemistQrPointFindRequest from '../../request/ChemistQrPointFindRequest';
@@ -50,12 +51,19 @@ export class PointController {
     }
 
     @Authorized()
+    @Post(Route.REDEEM_OTP)
+    public async otpForRedemption(@Param('chemistId') chemistId: string): Promise<Otp> {
+        return await this.pointService.otpForRedemption(chemistId);
+    }
+
+    @Authorized()
     @Get(Route.REDEEM_POINTS)
     public async redeemPoints(
         @Param('chemistId') chemistId: string,
         @QueryParam('points') points: number,
+        @QueryParam('otp') otp: string,
         @CurrentUser() user: User
     ): Promise<ChemistRedemptions> {
-        return await this.pointService.redeemPoints(chemistId, points, user);
+        return await this.pointService.redeemPoints(chemistId, points, otp, user);
     }
 }

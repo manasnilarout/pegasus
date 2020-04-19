@@ -49,5 +49,8 @@ export const Point = {
     get REDEEM_POINTS(): string {
         return `${this.REDEEM}${Chemist.BASE}${Chemist.ID}` + '([0-9]+$)';
     },
+    get REDEEM_OTP(): string {
+        return `${this.REDEEM}${Chemist.BASE}${Chemist.ID}/otp`;
+    },
     REDEMPTION: '/redemption',
 };

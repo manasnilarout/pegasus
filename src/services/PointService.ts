@@ -1,3 +1,4 @@
+import eventDispatcher from 'event-dispatch';
 import { Service } from 'typedi';
 import { In } from 'typeorm';
 import { OrmRepository } from 'typeorm-typedi-extensions';
@@ -5,21 +6,26 @@ import { OrmRepository } from 'typeorm-typedi-extensions';
 import ChemistQrPointFindRequest from '../api/request/ChemistQrPointFindRequest';
 import ChemistRedemptionFindRequest from '../api/request/ChemistRedemptionFindRequest';
 import FindResponse from '../api/response/FindResponse';
+import { events } from '../api/subscribers/events';
 import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
-import { AppBadRequestError, AppNotFoundError } from '../errors';
+import { AppBadRequestError, AppNotFoundError, AppUnauthorizedError } from '../errors';
 import { PointErrorCodes as ErrorCodes } from '../errors/codes';
 import { Chemist, ChemistStatus } from '../models/Chemist';
 import { ChemistQrPoint } from '../models/ChemistQrPoint';
 import { ChemistRedemptions } from '../models/ChemistRedemptions';
+import { Otp, OTPReason, OTPStatus } from '../models/Otp';
 import { QrPoints, QrPointsStatus } from '../models/QrPoints';
 import { User } from '../models/User';
 import { ChemistQrPointsRepository } from '../repositories/ChemistQrPointsRepository';
 import { ChemistRedemptionRepository } from '../repositories/ChemistRedemptionRepository';
 import { ChemistRepository } from '../repositories/ChemistRepository';
+import { OtpRepository } from '../repositories/OTPRepository';
 import { QrPointsRepository } from '../repositories/QrPointsRepository';
+import { RendererUtil } from '../utils/renderer.util';
 import { TransactionManager } from '../utils/TransactionManager';
 import { AppService } from './AppService';
+import { UserService } from './UserService';
 
 @Service()
 export class PointService extends AppService {
@@ -28,7 +34,8 @@ export class PointService extends AppService {
         @OrmRepository() private chemistQrPointsRepository: ChemistQrPointsRepository,
         @OrmRepository() private chemistRepository: ChemistRepository,
         @OrmRepository() private qrPointsRepository: QrPointsRepository,
-        @OrmRepository() private chemistRedemptionRepository: ChemistRedemptionRepository
+        @OrmRepository() private chemistRedemptionRepository: ChemistRedemptionRepository,
+        @OrmRepository() private otpRepository: OtpRepository
     ) {
         super();
     }
@@ -141,8 +148,66 @@ export class PointService extends AppService {
         }
     }
 
-    public async redeemPoints(chemistId: string, points: number, loggedInUser: User): Promise<ChemistRedemptions> {
+    public async otpForRedemption(chemistId: string): Promise<Otp> {
         try {
+            const chemist = await this.chemistRepository.findOne({
+                relations: ['user'],
+                where: {
+                    id: chemistId,
+                    status: ChemistStatus.ACTIVE,
+                },
+            });
+
+            if (!chemist) {
+                throw new AppNotFoundError(
+                    ErrorCodes.chemistNotFound.id,
+                    ErrorCodes.chemistNotFound.msg,
+                    { chemistId }
+                );
+            }
+
+            const otp = await this.otpRepository.generateOtp(chemist.user.userId, OTPReason.REDEEM_POINTS);
+            eventDispatcher.dispatch(events.OTP.otpExpiry, otp);
+
+            this.log.info(`Sending OTP to user, #${chemist.user.userId}`);
+            const renderer = new RendererUtil();
+            const message = await renderer.renderHTMLTemplate('forgot-password-otp', otp, 'sms');
+            const response = await UserService.sendSmsToUser(chemist.user.phone, message);
+            this.log.debug(`Message forwarded, response = "${response}"`);
+            return otp;
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.otpGenerationFailed.id,
+                ErrorCodes.otpGenerationFailed.msg,
+                { chemistId }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async redeemPoints(chemistId: string, points: number, otpString: string, loggedInUser: User)
+        : Promise<ChemistRedemptions> {
+        try {
+            // Validate OTP for points redemption
+            const otp = await this.otpRepository.findOne({
+                relations: ['user', 'user.userLoginDetails'],
+                where: {
+                    otp: otpString,
+                    status: OTPStatus.ACTIVE,
+                    reason: OTPReason.REDEEM_POINTS,
+                    chemistId,
+                },
+            });
+
+            if (!otp) {
+                throw new AppUnauthorizedError(
+                    ErrorCodes.receivedInvalidOtp.id,
+                    ErrorCodes.receivedInvalidOtp.msg
+                );
+            }
+
             points = points ? Number(points) : undefined;
 
             if (!points) {
@@ -185,6 +250,10 @@ export class PointService extends AppService {
                 this.log.info(`Adjusting chemist points.`);
                 chemist.points = chemist.points - points;
                 await this.chemistRepository.save(chemist);
+
+                // Update OTP status
+                otp.status = OTPStatus.USED;
+                await this.otpRepository.save(otp);
 
                 const redemption = new ChemistRedemptions();
                 redemption.chemist = chemist;

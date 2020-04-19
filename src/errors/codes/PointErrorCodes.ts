@@ -39,4 +39,12 @@ export const PointErrorCodes = {
         id: 'redeeming-points-failed',
         msg: 'There was an error while redeeming points.',
     },
+    otpGenerationFailed: {
+        id: 'otp-generation-failed',
+        msg: 'There was an error while OTP generation.',
+    },
+    receivedInvalidOtp: {
+        id: 'received-invalid-otp',
+        msg: ' Received invalid OTP.',
+    },
 };

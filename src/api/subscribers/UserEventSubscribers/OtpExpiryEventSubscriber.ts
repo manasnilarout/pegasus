@@ -16,9 +16,15 @@ export class OtpExpiryEventSubscriber {
 
     @On(events.OTP.otpExpiry)
     public async onOtpExpiry(otp: Otp): Promise<void> {
-        otp.status = OTPStatus.EXPIRED;
         await this.wait(config.get('otp.otpExpiryTimeInMinutes'));
-        await this.otpRepository.save(otp);
+        const otpData = await this.otpRepository.findOne(otp.id);
+
+        if (otpData.status === OTPStatus.USED) {
+            return;
+        }
+
+        otpData.status = OTPStatus.EXPIRED;
+        await this.otpRepository.save(otpData);
     }
 
     private wait(timeInMinutes: number): Promise<void> {

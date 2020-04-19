@@ -32,7 +32,7 @@ import { AuthService } from './AuthService';
 
 @Service()
 export class UserService extends AppService {
-    protected static async sendSmsToUser(phone: string, message: string): Promise<string> {
+    public static async sendSmsToUser(phone: string, message: string): Promise<string> {
         try {
             const qs = {
                 workingkey: env.fovea.sms.auth,
