@@ -17,13 +17,13 @@ export class ProductRepository extends Repository<Product> implements AppFindRep
         queryBuilder.leftJoinAndSelect(
             'product.qrPoints',
             'qrPoints',
-            'WHERE qrPoints.status = :status',
+            'qrPoints.status = :status',
             { status: QrPointsStatus.ACTIVE }
         );
         queryBuilder.leftJoinAndSelect(
             'qrPoints.hqQrPoints',
             'hqQrPoints',
-            'WHERE hqQrPoints.status = :hqQrStatus',
+            'hqQrPoints.status = :hqQrStatus',
             { hqQrStatus: HqQrPointStatus.ACTIVE }
         );
         queryBuilder.select();
