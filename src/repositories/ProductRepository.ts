@@ -2,7 +2,9 @@ import { EntityRepository, Repository } from 'typeorm';
 
 import ProductFindRequest from '../api/request/ProductFindRequest';
 import FindResponse from '../api/response/FindResponse';
+import { HqQrPointStatus } from '../models/HqQrPoints';
 import { Product } from '../models/Product';
+import { QrPointsStatus } from '../models/QrPoints';
 import { AppFindRepository } from './AppFindRepository';
 import QueryHelper from './helpers/QueryHelper';
 
@@ -12,6 +14,18 @@ export class ProductRepository extends Repository<Product> implements AppFindRep
         const queryBuilder = this.createQueryBuilder('product');
         queryBuilder.leftJoinAndSelect('product.packType', 'packType');
         queryBuilder.leftJoinAndSelect('product.productType', 'productType');
+        queryBuilder.leftJoinAndSelect(
+            'product.qrPoints',
+            'qrPoints',
+            'WHERE qrPoints.status = :status',
+            { status: QrPointsStatus.ACTIVE }
+        );
+        queryBuilder.leftJoinAndSelect(
+            'qrPoints.hqQrPoints',
+            'hqQrPoints',
+            'WHERE hqQrPoints.status = :hqQrStatus',
+            { hqQrStatus: HqQrPointStatus.ACTIVE }
+        );
         queryBuilder.select();
 
         // Use query helper to build the query
