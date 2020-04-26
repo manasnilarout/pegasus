@@ -15,6 +15,7 @@ export class UserRepository extends Repository<User> implements AppFindRepositor
         queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
         queryBuilder.leftJoinAndSelect('user.chemist', 'chemist');
         queryBuilder.leftJoinAndSelect('user.mr', 'mr');
+        queryBuilder.leftJoinAndSelect('mr.chemists', 'chemists');
         queryBuilder.select();
 
         // Use query helper to build the query

@@ -8,7 +8,7 @@ export class CreateOTPTable1586526929075 implements MigrationInterface {
             \`user_id\` BIGINT UNSIGNED NOT NULL,
             \`otp\` VARCHAR(6) NOT NULL,
             \`status\` TINYINT NOT NULL,
-            \`reason\` ENUM('password-reset', 'redeem-points') NULL
+            \`reason\` ENUM('password-reset', 'redeem-points') NULL,
             \`created_on\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             \`updated_on\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (\`id\`),

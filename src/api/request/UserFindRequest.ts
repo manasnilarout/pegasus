@@ -16,6 +16,9 @@ export default class UserFindRequest extends FindRequest {
     @ModelProp('user.designation')
     public designation: number;
 
+    @ModelProp('user.userId')
+    public id: number;
+
     @ModelProp('user.headQuarter')
     public headQuarter: number;
 

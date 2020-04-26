@@ -102,16 +102,10 @@ export class UserService extends AppService {
             // https://github.com/typeorm/typeorm/issues/4209
             user.userLoginDetails.password = await UserLoginDetails.encryptUserPassword(user.userLoginDetails.password);
 
-            if (user.designation !== UserType.MR) {
-                throw new AppBadRequestError(
-                    ErrorCodes.onlyMRCreationIsAllowed.id,
-                    ErrorCodes.onlyMRCreationIsAllowed.msg,
-                    { user }
-                );
+            if (user.designation === UserType.MR) {
+                user.mr = new Mr();
+                user.mr.status = MRStatus.ACTIVE;
             }
-
-            user.mr = new Mr();
-            user.mr.status = MRStatus.ACTIVE;
 
             this.log.debug(`Validating user.`);
             await this.validateUser(user);

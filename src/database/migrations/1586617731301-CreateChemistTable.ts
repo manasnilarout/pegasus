@@ -27,7 +27,7 @@ export class CreateChemistTable1586617731301 implements MigrationInterface {
               ON DELETE CASCADE
               ON UPDATE CASCADE,
             CONSTRAINT \`fk_mr_id_mr_id\`
-              FOREIGN KEY (\`id\`)
+              FOREIGN KEY (\`mr_id\`)
               REFERENCES \`mr\` (\`id\`)
               ON DELETE NO ACTION
               ON UPDATE NO ACTION,

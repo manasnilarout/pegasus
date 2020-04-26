@@ -24,7 +24,6 @@ export class CreateChemistTable1585762911535 implements MigrationInterface {
             UNIQUE INDEX \`chemist_id_UNIQUE\` (\`chemist_id\` ASC),
             INDEX \`fk_head_quarter_head_quarter_id_idx\` (\`head_quarter\` ASC),
             INDEX \`fk_state_state_id_idx\` (\`state\` ASC),
-            INDEX \`fk_mr_user_user_id_idx\` (\`mr\` ASC),
             INDEX \`fk_chemist_speciality_speciality_id_idx\` (\`chemist_speciality\` ASC),
             INDEX \`fk_created_by_user_user_id_idx\` (\`created_by\` ASC))
           ENGINE = InnoDB
