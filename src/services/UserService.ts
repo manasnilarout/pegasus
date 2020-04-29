@@ -17,6 +17,7 @@ import {
 } from '../errors';
 import { UserErrorCodes as ErrorCodes } from '../errors/codes';
 import { Mr, MRStatus } from '../models/Mr';
+import { MrGiftOrders } from '../models/MrGiftOrders';
 import { Otp, OTPReason, OTPStatus } from '../models/Otp';
 import { User, UserStatus, UserType } from '../models/User';
 import { UserLoginDetails } from '../models/UserLoginDetails';
@@ -105,6 +106,7 @@ export class UserService extends AppService {
             if (user.designation === UserType.MR) {
                 user.mr = new Mr();
                 user.mr.status = MRStatus.ACTIVE;
+                user.mr.mrGiftOrders = [new MrGiftOrders()];
             }
 
             this.log.debug(`Validating user.`);

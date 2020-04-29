@@ -3,6 +3,7 @@ import {
 } from 'typeorm';
 
 import { Chemist } from './Chemist';
+import { MrGiftOrders } from './MrGiftOrders';
 import { User } from './User';
 
 export enum MRStatus {
@@ -30,4 +31,7 @@ export class Mr {
     @OneToOne(() => User, user => user.mr)
     @JoinColumn([{ name: 'user_id', referencedColumnName: 'userId' }])
     public user: User;
+
+    @OneToMany(() => MrGiftOrders, mrGiftOrders => mrGiftOrders.mr, { cascade: true })
+    public mrGiftOrders: MrGiftOrders[];
 }

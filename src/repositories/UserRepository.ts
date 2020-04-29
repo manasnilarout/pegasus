@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 
 import UserFindRequest from '../api/request/UserFindRequest';
 import FindResponse from '../api/response/FindResponse';
-import { User } from '../models/User';
+import { User, UserType } from '../models/User';
 import { AppFindRepository } from './AppFindRepository';
 import QueryHelper from './helpers/QueryHelper';
 
@@ -13,9 +13,22 @@ export class UserRepository extends Repository<User> implements AppFindRepositor
         queryBuilder.leftJoinAndSelect('user.state', 'state');
         queryBuilder.leftJoinAndSelect('user.city', 'city');
         queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
-        queryBuilder.leftJoinAndSelect('user.chemist', 'chemist');
-        queryBuilder.leftJoinAndSelect('user.mr', 'mr');
-        queryBuilder.leftJoinAndSelect('mr.chemists', 'chemists');
+
+        if (findOptions.designation === UserType.CHEMIST) {
+            queryBuilder.leftJoinAndSelect('user.chemist', 'chemist');
+        }
+
+        if (findOptions.designation === UserType.MR) {
+            queryBuilder.leftJoinAndSelect('user.mr', 'mr');
+            queryBuilder.leftJoinAndSelect('mr.chemists', 'chemists');
+            queryBuilder.leftJoinAndSelect('mr.mrGiftOrders', 'mrGiftOrders');
+        }
+
+        if (!findOptions.designation) {
+            queryBuilder.leftJoinAndSelect('user.chemist', 'chemist');
+            queryBuilder.leftJoinAndSelect('user.mr', 'mr');
+        }
+
         queryBuilder.select();
 
         // Use query helper to build the query

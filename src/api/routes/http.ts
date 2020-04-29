@@ -6,6 +6,8 @@ export const User = {
     BASE: '/user',
     ID: '/:userId',
     LOGIN: '/login',
+    MR: '/mr',
+    MR_ID: '/:mrId',
     get LOGOUT(): string {
         return `${this.ID}/logout`;
     },
