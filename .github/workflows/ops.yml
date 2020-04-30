@@ -21,10 +21,12 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+      with:
+        ref: master
 
     # Runs a single command using the runners shell
-    - name: Checkout to master branch and pull latest code
-      run: git pull git@github.com:manasnilarout/pegasus.git master
+    #- name: Checkout to master branch and pull latest code
+      #run: git pull git@github.com:manasnilarout/pegasus.git master
       
     - name: Install new dependencies
       run: yarn install
