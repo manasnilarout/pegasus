@@ -42,3 +42,10 @@ jobs:
       #run: |
         #yarn start build,
         #pm2 restart 0
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: fresh-build
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ./**
