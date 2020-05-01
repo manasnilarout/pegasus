@@ -24,7 +24,7 @@ export class ProductService extends AppService {
 
     public async createProduct(product: Product, loggedInUser: User): Promise<Product> {
         try {
-            product.productName = `${product.brand} ${product.name}`.trim();
+            product.productName = `${product.brand} ${product.name} ${product.packSize}`.trim();
             await this.validateProduct(product);
             product.createdByUser = loggedInUser;
             return await this.productRepository.save(product);
