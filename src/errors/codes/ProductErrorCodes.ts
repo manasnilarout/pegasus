@@ -23,4 +23,8 @@ export const ProductErrorCodes = {
         id: 'deleting-product-failed',
         msg: 'There was an error while deleting the product.',
     },
+    productAlreadyExists: {
+        id: 'product-already-exists',
+        msg: 'Product with that name already exists.',
+    },
 };

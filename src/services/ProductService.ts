@@ -25,6 +25,22 @@ export class ProductService extends AppService {
     public async createProduct(product: Product, loggedInUser: User): Promise<Product> {
         try {
             product.productName = `${product.brand} ${product.name} ${product.packSize}`.trim();
+
+            const oldProduct = await this.productRepository.findOne({
+                where: {
+                    productName: product.productName,
+                    status: ProductStatus.ACTIVE,
+                },
+            });
+
+            if (oldProduct) {
+                throw new AppBadRequestError(
+                    ErrorCodes.productAlreadyExists.id,
+                    ErrorCodes.productAlreadyExists.msg,
+                    { productName: product.productName }
+                );
+            }
+
             await this.validateProduct(product);
             product.createdByUser = loggedInUser;
             return await this.productRepository.save(product);
