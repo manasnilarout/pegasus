@@ -15,11 +15,18 @@ export const User = {
     get VALIDATE(): string {
         return `${this.ID}/validate`;
     },
+    get MR_CHEMISTS(): string {
+        return `${this.MR}${this.MR_ID}/chemists`;
+    },
+    get MR_GIFT_ORDERS(): string {
+        return `${this.MR}${this.MR_ID}/gift-order`;
+    },
 };
 
 export const Product = {
     BASE: '/product',
-    ID: '/:productId',
+    ID: '/:productId(\d+)',
+    POINTS: '/points',
 };
 
 export const Chemist = {

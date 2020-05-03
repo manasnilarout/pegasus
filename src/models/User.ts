@@ -86,8 +86,14 @@ export class User {
     @OneToOne(() => Chemist, chemist => chemist.user)
     public chemist: Chemist;
 
+    @OneToOne(() => Chemist, chemist => chemist.user)
+    public _chemist: Promise<Chemist>;
+
     @OneToOne(() => Mr, mr => mr.user, { cascade: ['insert', 'update'] })
     public mr: Mr;
+
+    @OneToOne(() => Mr, mr => mr.user, { cascade: ['insert', 'update'] })
+    public _mr: Promise<Mr>;
 
     @OneToMany(() => Product, product => product.createdByUser)
     public products: Product[];

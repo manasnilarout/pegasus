@@ -50,4 +50,10 @@ export class ProductController {
     public async deleteProduct(@Param('productId') productId: string): Promise<Product> {
         return await this.productService.deactivateProduct(Number(productId));
     }
+
+    @Authorized()
+    @Get(Route.POINTS)
+    public async getProductPoints(): Promise<any> {
+        return await this.productService.getProductPoints();
+    }
 }

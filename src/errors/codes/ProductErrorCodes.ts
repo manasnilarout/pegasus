@@ -27,4 +27,8 @@ export const ProductErrorCodes = {
         id: 'product-already-exists',
         msg: 'Product with that name already exists.',
     },
+    fetchingProductPointsFailed: {
+        id: 'fetching-product-points-failed',
+        msg: 'There was an error while fetching products.',
+    },
 };

@@ -3,7 +3,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import ProductFindRequest from '../api/request/ProductFindRequest';
 import FindResponse from '../api/response/FindResponse';
 import { HqQrPointStatus } from '../models/HqQrPoints';
-import { Product } from '../models/Product';
+import { Product, ProductStatus } from '../models/Product';
 import { QrPointsStatus } from '../models/QrPoints';
 import { AppFindRepository } from './AppFindRepository';
 import QueryHelper from './helpers/QueryHelper';
@@ -37,5 +37,35 @@ export class ProductRepository extends Repository<Product> implements AppFindRep
 
     public findList(findOptions?: ProductFindRequest): Promise<FindResponse<Product>> {
         throw new Error('Method not implemented.');
+    }
+
+    public async getProductPoints(): Promise<Product[]> {
+        const qb = this.createQueryBuilder('product');
+        qb.leftJoinAndSelect(
+            'product.qrPoints',
+            'qrPoints',
+            'qrPoints.status = :status',
+            { status: QrPointsStatus.ACTIVE }
+        );
+        qb.leftJoinAndSelect(
+            'qrPoints.hqQrPoints',
+            'hqQrPoints',
+            'hqQrPoints.status = :hqQrStatus',
+            { hqQrStatus: HqQrPointStatus.ACTIVE }
+        );
+
+        qb.select([
+            'product.id',
+            'product.productName',
+            'product.packSize',
+            'qrPoints.id',
+            'qrPoints.points',
+            'hqQrPoints.id',
+            'hqQrPoints.hqQrPoints',
+        ]);
+
+        qb.where('product.status = :status', { status: ProductStatus.ACTIVE });
+
+        return await qb.getMany();
     }
 }

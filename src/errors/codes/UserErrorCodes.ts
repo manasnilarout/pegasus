@@ -75,6 +75,18 @@ const UserErrorCodes = {
         id: 'user-not-MR',
         msg: 'User is not an MR.',
     },
+    mrNotFound: {
+        id: 'mr-not-found',
+        msg: 'No active MR found with provided details.',
+    },
+    fetchingChemistsFailed: {
+        id: 'fetching-chemists-failed',
+        msg: 'There was an error while fetching MR Chemists.',
+    },
+    fetchMrGiftOrdersFailed: {
+        id: 'fetch-mr-gift-orders-failed',
+        msg: 'There was an error while fetching gift order details for an MR.',
+    },
 };
 
 export { UserErrorCodes };

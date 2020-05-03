@@ -2,6 +2,7 @@ import {
     Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn
 } from 'typeorm';
 
+import { config } from '../config';
 import { Chemist } from './Chemist';
 import { MrGiftOrders } from './MrGiftOrders';
 import { User } from './User';
@@ -34,4 +35,6 @@ export class Mr {
 
     @OneToMany(() => MrGiftOrders, mrGiftOrders => mrGiftOrders.mr, { cascade: true })
     public mrGiftOrders: MrGiftOrders[];
+
+    public requiredOrders = config.get('thresholds.mrRequiredOrders');
 }

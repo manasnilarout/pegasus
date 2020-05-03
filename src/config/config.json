@@ -36,7 +36,8 @@
         "otpSize": 6
     },
     "thresholds": {
-        "chemistMinPoints": 1000
+        "chemistMinPoints": 1000,
+        "mrRequiredOrders": 100
     },
     "prometheusMetricsOption": {
         "metricsPath": "/metrics",

@@ -143,6 +143,21 @@ export class ProductService extends AppService {
         }
     }
 
+    public async getProductPoints(): Promise<any> {
+        try {
+            const products = await this.productRepository.getProductPoints();
+            return products;
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.fetchingProductPointsFailed.id,
+                ErrorCodes.fetchingProductPointsFailed.msg
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
     private async validateProduct(product: Product): Promise<void> {
         const errors = await validate(product);
 

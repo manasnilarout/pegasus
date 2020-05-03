@@ -5,6 +5,7 @@ import {
 
 import UserFindRequest from '../../../api/request/UserFindRequest';
 import FindResponse from '../../../api/response/FindResponse';
+import { Mr } from '../../../models/Mr';
 import { Otp } from '../../../models/Otp';
 import { User, UserType } from '../../../models/User';
 import { UserTokens } from '../../../models/UserTokens';
@@ -77,5 +78,15 @@ export class UserController {
     public async getMrDetails(@QueryParams() params: UserFindRequest): Promise<FindResponse<User>> {
         params.designation = UserType.MR;
         return await this.userService.getUsers(params);
+    }
+
+    @Get(Route.MR_CHEMISTS)
+    public async getMrChemistDetails(@Param('mrId') mrId: string): Promise<Mr> {
+        return await this.userService.getMrChemistDetails(Number(mrId));
+    }
+
+    @Get(Route.MR_GIFT_ORDERS)
+    public async getMrGiftOrderDetails(@Param('mrId') mrId: string): Promise<Mr> {
+        return await this.userService.getMrGiftOrderDetails(Number(mrId));
     }
 }

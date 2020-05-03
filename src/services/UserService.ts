@@ -163,7 +163,7 @@ export class UserService extends AppService {
     public async loginUser(loginDetails: LoginCredentials): Promise<UserTokens> {
         try {
             const userLoginDetails = await this.userLoginDetailsRepository.findOne({
-                relations: ['user'],
+                relations: ['user', 'user.city', 'user.state', 'user.headQuarter'],
                 where: {
                     username: loginDetails.username,
                 },
@@ -177,8 +177,6 @@ export class UserService extends AppService {
                 );
             }
 
-            console.log(JSON.stringify(userLoginDetails));
-
             const match = await UserLoginDetails.comparePassword(userLoginDetails.password, loginDetails.password);
 
             if (!match) {
@@ -188,8 +186,17 @@ export class UserService extends AppService {
                 );
             }
 
+            const user = userLoginDetails.user;
+
+            if (user.designation === UserType.MR) {
+                await user._mr;
+            } else if (user.designation === UserType.CHEMIST) {
+                await user._chemist;
+            }
+
             const userToken = this.authService.generateToken(userLoginDetails.user);
             await this.userTokensRepository.insert(userToken);
+            userToken.user = user;
             return userToken;
         } catch (err) {
             const error = this.classifyError(
@@ -204,6 +211,52 @@ export class UserService extends AppService {
 
     public async getUsers(userFindRequest: UserFindRequest): Promise<FindResponse<User>> {
         return await this.fetchAll(this.userRepository, userFindRequest);
+    }
+
+    public async getMrChemistDetails(mrId: number): Promise<Mr> {
+        try {
+            const mr = await this.mrRepository.getMrChemistDetails(mrId);
+
+            if (!mr) {
+                this.mrNotFoundError(mrId);
+            }
+
+            return mr;
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.fetchingChemistsFailed.id,
+                ErrorCodes.fetchingChemistsFailed.msg
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getMrGiftOrderDetails(mrId: number): Promise<Mr> {
+        try {
+            const mr = await this.mrRepository.findOne({
+                relations: ['mrGiftOrders'],
+                where: {
+                    id: mrId,
+                    status: MRStatus.ACTIVE,
+                },
+            });
+
+            if (!mr) {
+                this.mrNotFoundError(mrId);
+            }
+
+            return mr;
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.fetchMrGiftOrdersFailed.id,
+                ErrorCodes.fetchMrGiftOrdersFailed.msg
+            );
+            error.log(this.log);
+            throw error;
+        }
     }
 
     public async deactivateUser(userId: number): Promise<User> {
@@ -393,6 +446,14 @@ export class UserService extends AppService {
             ErrorCodes.userNotFound.id,
             ErrorCodes.userNotFound.msg,
             { userId }
+        );
+    }
+
+    private mrNotFoundError(mrId?: number): void {
+        throw new AppBadRequestError(
+            ErrorCodes.mrNotFound.id,
+            ErrorCodes.mrNotFound.msg,
+            { mrId }
         );
     }
 }
