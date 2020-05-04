@@ -40,6 +40,9 @@ export class Product {
     @Column({ name: 'pack_type' })
     public packTypeId: number;
 
+    @Column({ name: 'points' })
+    public points: number;
+
     @IsNotEmpty()
     @Column({ name: 'pack_size' })
     public packSize: string;

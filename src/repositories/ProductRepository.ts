@@ -39,7 +39,7 @@ export class ProductRepository extends Repository<Product> implements AppFindRep
         throw new Error('Method not implemented.');
     }
 
-    public async getProductPoints(): Promise<Product[]> {
+    public async getProductPoints(hqId: number): Promise<Product[]> {
         const qb = this.createQueryBuilder('product');
         qb.leftJoinAndSelect(
             'product.qrPoints',
@@ -50,14 +50,15 @@ export class ProductRepository extends Repository<Product> implements AppFindRep
         qb.leftJoinAndSelect(
             'qrPoints.hqQrPoints',
             'hqQrPoints',
-            'hqQrPoints.status = :hqQrStatus',
-            { hqQrStatus: HqQrPointStatus.ACTIVE }
+            'hqQrPoints.status = :hqQrStatus' + (hqId ? ' AND hqQrPoints.hqId = :hqId' : ''),
+            { hqQrStatus: HqQrPointStatus.ACTIVE, hqId }
         );
 
         qb.select([
             'product.id',
             'product.productName',
             'product.packSize',
+            'product.points',
             'qrPoints.id',
             'qrPoints.points',
             'hqQrPoints.id',

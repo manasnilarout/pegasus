@@ -1,5 +1,6 @@
 import {
-    Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParams
+    Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParam,
+    QueryParams
 } from 'routing-controllers';
 
 import ProductFindRequest from '../../../api/request/ProductFindRequest';
@@ -53,7 +54,7 @@ export class ProductController {
 
     @Authorized()
     @Get(Route.POINTS)
-    public async getProductPoints(): Promise<any> {
-        return await this.productService.getProductPoints();
+    public async getProductPoints(@QueryParam('hqId') hqId: string): Promise<Product[]> {
+        return await this.productService.getProductPoints(Number(hqId));
     }
 }

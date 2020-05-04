@@ -143,9 +143,20 @@ export class ProductService extends AppService {
         }
     }
 
-    public async getProductPoints(): Promise<any> {
+    public async getProductPoints(hqId: number): Promise<Product[]> {
         try {
-            const products = await this.productRepository.getProductPoints();
+            const products = await this.productRepository.getProductPoints(hqId);
+
+            for (const product of products) {
+                const hqQrPoint = product.qrPoints.find(qrPoint => qrPoint.hqQrPoints.length > 0);
+
+                if (hqQrPoint && hqQrPoint.hqQrPoints && hqQrPoint.hqQrPoints.length) {
+                    product.points = hqQrPoint.hqQrPoints[0].hqQrPoints;
+                }
+
+                delete product.qrPoints;
+            }
+
             return products;
         } catch (err) {
             const error = this.classifyError(
