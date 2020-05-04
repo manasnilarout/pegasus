@@ -31,4 +31,8 @@ export const QrPointErrorCodes = {
         id: 'no-valid-qrs-found',
         msg: 'No active qr\'s found with given ID.',
     },
+    productNotFound: {
+        id: 'product-not-found',
+        msg: 'Product with given ID not found.',
+    },
 };

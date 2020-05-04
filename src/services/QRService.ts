@@ -10,8 +10,10 @@ import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
 import { AppBadRequestError, AppNotFoundError, AppValidationError } from '../errors';
 import { QrPointErrorCodes as ErrorCodes } from '../errors/codes';
+import { ProductStatus } from '../models/Product';
 import { QrPoints, QrPointsStatus } from '../models/QrPoints';
 import { User } from '../models/User';
+import { ProductRepository } from '../repositories/ProductRepository';
 import { QrPointsRepository } from '../repositories/QrPointsRepository';
 import { QRUtil } from '../utils/qr.util';
 import { AppService } from './AppService';
@@ -22,7 +24,8 @@ export class QRService extends AppService {
     constructor(
         @Logger(__filename, config.get('clsNamespace.name')) protected log: LoggerInterface,
         private attachmentService: AttachmentService,
-        @OrmRepository() private qrPointsRepository: QrPointsRepository
+        @OrmRepository() private qrPointsRepository: QrPointsRepository,
+        @OrmRepository() private productRepository: ProductRepository
     ) {
         super();
     }
@@ -43,7 +46,24 @@ export class QRService extends AppService {
                 );
             }
 
+            const product = await this.productRepository.findOne({
+                where: {
+                    id: qr.productId,
+                    status: ProductStatus.ACTIVE,
+                },
+            });
+
+            if (!product) {
+                throw new AppNotFoundError(
+                    ErrorCodes.productNotFound.id,
+                    ErrorCodes.productNotFound.msg,
+                    { productId: qr.productId }
+                );
+            }
+
             this.log.info(`Creating ${qr.batchQuantity} new QR's.`);
+            // Assign product points to the QR.
+            qr.points = product.points;
             qr.createdById = loggedInUser.userId;
             qr.status = QrPointsStatus.ACTIVE;
 
