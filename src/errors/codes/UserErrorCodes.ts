@@ -87,6 +87,14 @@ const UserErrorCodes = {
         id: 'fetch-mr-gift-orders-failed',
         msg: 'There was an error while fetching gift order details for an MR.',
     },
+    gettingMrChemistOrdersFailed: {
+        id: 'getting-mr-chemist-orders-failed',
+        msg: 'There was an error while getting MR Chemist order details.',
+    },
+    gettingMrChemistClaimsFailed: {
+        id: 'getting-mr-chemist-claims-failed',
+        msg: 'There was an error while getting MR Chemist claim details.',
+    },
 };
 
 export { UserErrorCodes };

@@ -1,6 +1,6 @@
 import {
     Authorized, Body, BodyParam, CurrentUser, Delete, Get, JsonController, Param, Patch, Post, Put,
-    QueryParams
+    QueryParam, QueryParams
 } from 'routing-controllers';
 
 import UserFindRequest from '../../../api/request/UserFindRequest';
@@ -88,5 +88,21 @@ export class UserController {
     @Get(Route.MR_GIFT_ORDERS)
     public async getMrGiftOrderDetails(@Param('mrId') mrId: string): Promise<Mr> {
         return await this.userService.getMrGiftOrderDetails(Number(mrId));
+    }
+
+    @Get(Route.MR_CHEMIST_ORDERS)
+    public async getMrChemistOrders(
+        @Param('mrId') mrId: string,
+        @QueryParam('periodInMonths') periodInMonths: number
+    ): Promise<Mr> {
+        return await this.userService.getMrChemistOrders(Number(mrId), periodInMonths);
+    }
+
+    @Get(Route.MR_CHEMIST_CLAIMS)
+    public async getMrChemistClaims(
+        @Param('mrId') mrId: string,
+        @QueryParam('periodInMonths') periodInMonths: number
+    ): Promise<Mr> {
+        return await this.userService.getMrChemistClaims(Number(mrId), periodInMonths);
     }
 }

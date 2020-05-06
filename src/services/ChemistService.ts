@@ -23,6 +23,14 @@ import { UserService } from './UserService';
 
 @Service()
 export class ChemistService extends AppService {
+    public static calculateDates(differenceInMonths: number): { startDate: Date, endDate: Date } {
+        const JS_DATE_DIFF = 1;
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - (differenceInMonths - JS_DATE_DIFF));
+        startDate.setDate(startDate.getDate() - (startDate.getDate() - JS_DATE_DIFF));
+        return { startDate, endDate };
+    }
     constructor(
         @Logger(__filename, config.get('clsNamespace.name')) protected log: LoggerInterface,
         private attachmentService: AttachmentService,
@@ -173,6 +181,94 @@ export class ChemistService extends AppService {
                 ErrorCodes.chemistDeletionFailed.id,
                 ErrorCodes.chemistDeletionFailed.msg,
                 { chemist }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getChemistOrders(chemistId: number, periodInMonths?: number): Promise<Chemist> {
+        try {
+            const chemist = await this.chemistRepository.findOne({
+                where: {
+                    id: chemistId,
+                    status: ChemistStatus.ACTIVE,
+                },
+            });
+
+            if (!chemist) {
+                throw new AppBadRequestError(
+                    ErrorCodes.chemistNotFound.id,
+                    ErrorCodes.chemistNotFound.msg,
+                    { chemistId }
+                );
+            }
+
+            let chemistOrderDetails: any;
+
+            if (periodInMonths) {
+                this.log.debug(`Orders for last ${periodInMonths} months to be calculated.`);
+                const calculatedDates = ChemistService.calculateDates(Number(periodInMonths));
+                chemistOrderDetails = await this.chemistRepository.getChemistOrders(chemistId, calculatedDates);
+            } else {
+                chemistOrderDetails = await this.chemistRepository.getChemistOrders(chemistId);
+            }
+
+            chemistOrderDetails.orders = chemistOrderDetails.chemistQrPoints.map(chemistQrPoint => {
+                return {
+                    qrId: chemistQrPoint.qr.id,
+                    productName: chemistQrPoint.qr.product.productName,
+                    productId: chemistQrPoint.qr.product.id,
+                    points: (chemistQrPoint.qr.hqQrPoints && chemistQrPoint.qr.hqQrPoints.length)
+                        ? chemistQrPoint.qr.hqQrPoints[0].hqQrPoints : chemistQrPoint.qr.points,
+                    orderedOn: chemistQrPoint.createdOn,
+                };
+            });
+
+            delete chemistOrderDetails.chemistQrPoints;
+            return chemistOrderDetails;
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.fetchingChemistOrdersFailed.id,
+                ErrorCodes.fetchingChemistOrdersFailed.msg,
+                { chemistId, periodInMonths }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getChemistClaims(chemistId: number, periodInMonths?: number): Promise<Chemist> {
+        try {
+            const chemist = await this.chemistRepository.findOne({
+                where: {
+                    id: chemistId,
+                    status: ChemistStatus.ACTIVE,
+                },
+            });
+
+            if (!chemist) {
+                throw new AppBadRequestError(
+                    ErrorCodes.chemistNotFound.id,
+                    ErrorCodes.chemistNotFound.msg,
+                    { chemistId }
+                );
+            }
+
+            if (periodInMonths) {
+                this.log.debug(`Claims for last ${periodInMonths} months to be calculated.`);
+                const calculatedDates = ChemistService.calculateDates(Number(periodInMonths));
+                return await this.chemistRepository.getChemistClaims(chemistId, calculatedDates);
+            }
+
+            return await this.chemistRepository.getChemistClaims(chemistId);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.fetchingChemistClaimsFailed.id,
+                ErrorCodes.fetchingChemistClaimsFailed.msg,
+                { chemistId, periodInMonths }
             );
             error.log(this.log);
             throw error;

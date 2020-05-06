@@ -21,6 +21,12 @@ export const User = {
     get MR_GIFT_ORDERS(): string {
         return `${this.MR}${this.MR_ID}/gift-order`;
     },
+    get MR_CHEMIST_ORDERS(): string {
+        return `${this.MR}${this.MR_ID}/chemist/orders`;
+    },
+    get MR_CHEMIST_CLAIMS(): string {
+        return `${this.MR}${this.MR_ID}/chemist/claims`;
+    },
 };
 
 export const Product = {
@@ -32,6 +38,12 @@ export const Product = {
 export const Chemist = {
     BASE: '/chemist',
     ID: '/:chemistId',
+    get ORDERS(): string {
+        return `${this.ID}/orders`;
+    },
+    get CLAIMS(): string {
+        return `${this.ID}/claims`;
+    },
 };
 
 export const QR = {

@@ -1,7 +1,7 @@
 import multer from 'multer';
 import {
-    Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParams, Req,
-    UseBefore
+    Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put, QueryParam,
+    QueryParams, Req, UseBefore
 } from 'routing-controllers';
 
 import { DefaultFileUploadConfig } from '../../../config';
@@ -64,5 +64,23 @@ export class ChemistController {
             req.files.shopLicence[0],
             req.files.shopPhoto[0]
         );
+    }
+
+    @Authorized()
+    @Get(Route.ORDERS)
+    public async getChemistOrders(
+        @Param('chemistId') chemistId: string,
+        @QueryParam('periodInMonths') periodInMonths: number
+    ): Promise<Chemist> {
+        return await this.chemistService.getChemistOrders(Number(chemistId), periodInMonths);
+    }
+
+    @Authorized()
+    @Get(Route.CLAIMS)
+    public async getChemistClaims(
+        @Param('chemistId') chemistId: string,
+        @QueryParam('periodInMonths') periodInMonths: number
+    ): Promise<Chemist> {
+        return await this.chemistService.getChemistClaims(Number(chemistId), periodInMonths);
     }
 }

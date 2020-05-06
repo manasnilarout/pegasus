@@ -27,4 +27,12 @@ export const ChemistErrorCodes = {
         id: 'chemist-not-found',
         msg: 'Chemist with given details not found.',
     },
+    fetchingChemistOrdersFailed: {
+        id: 'fetching-chemist-orders-failed',
+        msg: 'There was an error while fetching chemist orders.',
+    },
+    fetchingChemistClaimsFailed: {
+        id: 'fetching-chemist-claims-failed',
+        msg: 'There was an error while fetching chemist claims.',
+    },
 };

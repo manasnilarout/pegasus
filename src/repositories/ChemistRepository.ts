@@ -3,6 +3,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import ChemistFindRequest from '../api/request/ChemistFindRequest';
 import FindResponse from '../api/response/FindResponse';
 import { Chemist } from '../models/Chemist';
+import { HqQrPointStatus } from '../models/HqQrPoints';
 import { AppFindRepository } from './AppFindRepository';
 import QueryHelper from './helpers/QueryHelper';
 
@@ -30,5 +31,77 @@ export class ChemistRepository extends Repository<Chemist> implements AppFindRep
 
     public findList(findOptions?: ChemistFindRequest): Promise<FindResponse<Chemist>> {
         throw new Error('Method not implemented.');
+    }
+
+    public async getChemistOrders(
+        chemistId: number,
+        duration?: { startDate: Date, endDate: Date }
+    ): Promise<Chemist> {
+        const qb = this.createQueryBuilder('chemist');
+
+        if (duration) {
+            qb.leftJoinAndSelect(
+                'chemist.chemistQrPoints',
+                'chemistQrPoints',
+                'chemistQrPoints.createdOn BETWEEN :startDate AND :endDate',
+                duration
+            );
+        } else {
+            qb.leftJoinAndSelect('chemist.chemistQrPoints', 'chemistQrPoints');
+        }
+
+        qb.leftJoinAndSelect('chemistQrPoints.qr', 'qr');
+        qb.leftJoinAndSelect(
+            'qr.hqQrPoints',
+            'hqQrPoints',
+            'hqQrPoints.status = :hqQrStatus',
+            { hqQrStatus: HqQrPointStatus.ACTIVE }
+        );
+        qb.leftJoinAndSelect('qr.product', 'product');
+
+        qb.select([
+            'chemist.id',
+            'chemist.mrId',
+            'chemist.points',
+            'chemistQrPoints.id',
+            'chemistQrPoints.createdOn',
+            'qr.id',
+            'qr.points',
+            'product.id',
+            'product.productName',
+        ]);
+
+        qb.where('chemist.id = :chemistId', { chemistId });
+        return await qb.getOne();
+    }
+
+    public async getChemistClaims(
+        chemistId: number,
+        duration?: { startDate: Date, endDate: Date }
+    ): Promise<Chemist> {
+        const qb = this.createQueryBuilder('chemist');
+
+        if (duration) {
+            qb.leftJoinAndSelect(
+                'chemist.chemistRedemptions',
+                'chemistRedemptions',
+                'chemistRedemptions.redeemedOn BETWEEN :startDate AND :endDate',
+                duration
+            );
+        } else {
+            qb.leftJoinAndSelect('chemist.chemistRedemptions', 'chemistRedemptions');
+        }
+
+        qb.select([
+            'chemist.id',
+            'chemist.mrId',
+            'chemist.points',
+            'chemistRedemptions.id',
+            'chemistRedemptions.points',
+            'chemistRedemptions.redeemedOn',
+        ]);
+
+        qb.where('chemist.id = :chemistId', { chemistId });
+        return await qb.getOne();
     }
 }

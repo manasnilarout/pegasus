@@ -30,6 +30,7 @@ import { UserTokensRepository } from '../repositories/UserTokensRepository';
 import { RendererUtil } from '../utils/renderer.util';
 import { AppService } from './AppService';
 import { AuthService } from './AuthService';
+import { ChemistService } from './ChemistService';
 
 @Service()
 export class UserService extends AppService {
@@ -423,6 +424,88 @@ export class UserService extends AppService {
                 ErrorCodes.userEditFailed.id,
                 ErrorCodes.userEditFailed.msg,
                 { userId, user }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getMrChemistOrders(mrId: number, periodInMonths?: number): Promise<Mr> {
+        try {
+            const mr = await this.mrRepository.findOne({
+                where: {
+                    id: mrId,
+                    status: MRStatus.ACTIVE,
+                },
+            });
+
+            if (!mr) {
+                this.mrNotFoundError(mrId);
+            }
+
+            let mrChemistOrderDetails: Mr;
+            if (periodInMonths) {
+                const calculatedDates = ChemistService.calculateDates(Number(periodInMonths));
+                mrChemistOrderDetails = await this.mrRepository.getMrChemistOrders(mrId, calculatedDates);
+            } else {
+                mrChemistOrderDetails = await this.mrRepository.getMrChemistOrders(mrId);
+            }
+
+            for (const chemistOrderDetails of mrChemistOrderDetails.chemists) {
+                // @ts-ignore: Orders is an self injected property
+                chemistOrderDetails.orders = chemistOrderDetails.chemistQrPoints.map(chemistQrPoint => {
+                    return {
+                        qrId: chemistQrPoint.qr.id,
+                        productName: chemistQrPoint.qr.product.productName,
+                        productId: chemistQrPoint.qr.product.id,
+                        points: (chemistQrPoint.qr.hqQrPoints && chemistQrPoint.qr.hqQrPoints.length)
+                            ? chemistQrPoint.qr.hqQrPoints[0].hqQrPoints : chemistQrPoint.qr.points,
+                        orderedOn: chemistQrPoint.createdOn,
+                    };
+                });
+
+                delete chemistOrderDetails.chemistQrPoints;
+            }
+
+            return mrChemistOrderDetails;
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.gettingMrChemistOrdersFailed.id,
+                ErrorCodes.gettingMrChemistOrdersFailed.msg,
+                { mrId, periodInMonths }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getMrChemistClaims(mrId: number, periodInMonths?: number): Promise<Mr> {
+        try {
+            const mr = await this.mrRepository.findOne({
+                where: {
+                    id: mrId,
+                    status: MRStatus.ACTIVE,
+                },
+            });
+
+            if (!mr) {
+                this.mrNotFoundError(mrId);
+            }
+
+            if (periodInMonths) {
+                this.log.debug(`Claims for last ${periodInMonths} months to be calculated.`);
+                const calculatedDates = ChemistService.calculateDates(Number(periodInMonths));
+                return await this.mrRepository.getMrChemistClaims(mrId, calculatedDates);
+            }
+
+            return await this.mrRepository.getMrChemistClaims(mrId);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.gettingMrChemistClaimsFailed.id,
+                ErrorCodes.gettingMrChemistClaimsFailed.msg,
+                { mrId, periodInMonths }
             );
             error.log(this.log);
             throw error;
