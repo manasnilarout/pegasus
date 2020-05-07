@@ -28,6 +28,10 @@ export class Chemist {
     @Column({ name: 'shop_phone' })
     public shopPhone: string;
 
+    @IsNotEmpty()
+    @Column({ name: 'shop_name' })
+    public shopName: string;
+
     @IsOptional()
     @Column({ name: 'mr_id' })
     public mrId: number;
