@@ -53,6 +53,7 @@ export class ChemistService extends AppService {
 
             return TransactionManager.run(async () => {
                 const newChemist = new Chemist();
+                newChemist.shopName = chemist.shopName || chemist.name;
                 newChemist.shopPhoto = await this.attachmentService.createAttachment(shopPhoto);
                 newChemist.shopLicence = await this.attachmentService.createAttachment(shopLicence);
                 newChemist.user = await this.userService.createUser(userObj, loggedInUser);

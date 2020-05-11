@@ -2,6 +2,7 @@ export interface ChemistRequest {
     name: string;
     email: string;
     shopPhone: string;
+    shopName: string;
     mobileNo: string;
     headQuarter: number;
     address: string;
