@@ -13,7 +13,7 @@ export default class ChemistFindRequest extends FindRequest {
     @Type(() => Number)
     public status: ChemistStatus;
 
-    @ModelProp('chemist.chemistId')
+    @ModelProp('chemist.id')
     public id: number;
 
     @ModelProp('user.userId')
@@ -37,4 +37,6 @@ export default class ChemistFindRequest extends FindRequest {
     @ModelProp('chemist.createdOn', { sortable: true })
     @Type(() => Date)
     public createdOn: Date;
+
+    public getAllScannedProducts = 0;
 }

@@ -35,4 +35,8 @@ export const ChemistErrorCodes = {
         id: 'fetching-chemist-claims-failed',
         msg: 'There was an error while fetching chemist claims.',
     },
+    fetchingSpecialtiesFailed: {
+        id: 'fetching-specialties-failed',
+        msg: 'There was an error while fetching specialties.',
+    },
 };

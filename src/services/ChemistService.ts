@@ -11,10 +11,12 @@ import { AppBadRequestError } from '../errors';
 import { ChemistErrorCodes as ErrorCodes } from '../errors/codes';
 import { AttachmentStatus } from '../models/Attachments';
 import { Chemist, ChemistStatus } from '../models/Chemist';
+import { Specialty } from '../models/Specialty';
 import { User, UserStatus, UserType } from '../models/User';
 import { UserLoginDetails } from '../models/UserLoginDetails';
 import { AttachmentsRepository } from '../repositories/AttachmentsRepository';
 import { ChemistRepository } from '../repositories/ChemistRepository';
+import { SpecialtyRepository } from '../repositories/SpecialtyRepository';
 import { UserRepository } from '../repositories/UserRepository';
 import { TransactionManager } from '../utils/TransactionManager';
 import { AppService } from './AppService';
@@ -37,7 +39,8 @@ export class ChemistService extends AppService {
         private userService: UserService,
         @OrmRepository() private chemistRepository: ChemistRepository,
         @OrmRepository() private userRepository: UserRepository,
-        @OrmRepository() private attachmentsRepository: AttachmentsRepository
+        @OrmRepository() private attachmentsRepository: AttachmentsRepository,
+        @OrmRepository() private specialtyRepository: SpecialtyRepository
     ) {
         super();
     }
@@ -234,6 +237,20 @@ export class ChemistService extends AppService {
                 ErrorCodes.fetchingChemistOrdersFailed.id,
                 ErrorCodes.fetchingChemistOrdersFailed.msg,
                 { chemistId, periodInMonths }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getChemistSpecialties(): Promise<Specialty[]> {
+        try {
+            return await this.specialtyRepository.find();
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.fetchingSpecialtiesFailed.id,
+                ErrorCodes.fetchingSpecialtiesFailed.msg
             );
             error.log(this.log);
             throw error;

@@ -31,4 +31,28 @@ export const ProductErrorCodes = {
         id: 'fetching-product-points-failed',
         msg: 'There was an error while fetching products.',
     },
+    creatingProductTypeFailed: {
+        id: 'creating-product-type-failed',
+        msg: 'There was an error while creating product type.',
+    },
+    creatingPackTypeFailed: {
+        id: 'creating-product-pack-type-failed',
+        msg: 'There was an error while creating product pack type.',
+    },
+    fetchingPackTypeFailed: {
+        id: 'fetching-pack-types-failed',
+        msg: 'There was an error while fetching pack type fields.',
+    },
+    fetchingProductTypeFailed: {
+        id: 'fetching-product-type-failed',
+        msg: 'There was an error while fetching product type fields.',
+    },
+    productTypeAlreadyExists: {
+        id: 'product-type-already-exists',
+        msg: 'Product type already exists.',
+    },
+    packTypeAlreadyExists: {
+        id: 'pack-type-already-exists',
+        msg: 'Pack type already exists.',
+    },
 };

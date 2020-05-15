@@ -6,6 +6,7 @@ import {
 
 import { DefaultFileUploadConfig } from '../../../config';
 import { Chemist } from '../../../models/Chemist';
+import { Specialty } from '../../../models/Specialty';
 import { User } from '../../../models/User';
 import { ChemistService } from '../../../services/ChemistService';
 import ChemistFindRequest from '../../request/ChemistFindRequest';
@@ -82,5 +83,11 @@ export class ChemistController {
         @QueryParam('periodInMonths') periodInMonths: number
     ): Promise<Chemist> {
         return await this.chemistService.getChemistClaims(Number(chemistId), periodInMonths);
+    }
+
+    @Authorized()
+    @Get(Route.SPECIALTIES)
+    public async getChemistSpecialties(): Promise<Specialty[]> {
+        return await this.chemistService.getChemistSpecialties();
     }
 }

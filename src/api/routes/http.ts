@@ -33,6 +33,8 @@ export const Product = {
     BASE: '/product',
     ID: '/:productId(\d+)',
     POINTS: '/points',
+    BRAND_TYPE: '/brand-type',
+    PACK_TYPE: '/pack-type',
 };
 
 export const Chemist = {
@@ -44,6 +46,7 @@ export const Chemist = {
     get CLAIMS(): string {
         return `${this.ID}/claims`;
     },
+    SPECIALTIES: '/specialties',
 };
 
 export const QR = {

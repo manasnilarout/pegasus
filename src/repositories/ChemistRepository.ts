@@ -11,16 +11,48 @@ import QueryHelper from './helpers/QueryHelper';
 export class ChemistRepository extends Repository<Chemist> implements AppFindRepository<Chemist>  {
     public async findAll(findOptions?: ChemistFindRequest): Promise<FindResponse<Chemist>> {
         const queryBuilder = this.createQueryBuilder('chemist');
-        queryBuilder.leftJoinAndSelect('chemist.user', 'user');
-        queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
-        queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');
-        queryBuilder.leftJoinAndSelect('chemist.shopLicence', 'shopLicence');
-        queryBuilder.leftJoinAndSelect('chemist.shopPhoto', 'shopPhoto');
-        queryBuilder.leftJoinAndSelect('chemist.chemistSpeciality', 'chemistSpeciality');
-        queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
-        queryBuilder.leftJoinAndSelect('user.city', 'city');
-        queryBuilder.leftJoinAndSelect('user.state', 'state');
-        queryBuilder.select();
+
+        if (findOptions.getAllScannedProducts) {
+            queryBuilder.leftJoinAndSelect('chemist.chemistQrPoints', 'chemistQrPoints');
+            queryBuilder.leftJoinAndSelect('chemistQrPoints.qr', 'qr');
+            queryBuilder.leftJoinAndSelect('qr.product', 'product');
+            queryBuilder.leftJoinAndSelect('chemist.user', 'user');
+            queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
+            queryBuilder.leftJoinAndSelect('user.city', 'city');
+            queryBuilder.leftJoinAndSelect('user.state', 'state');
+            queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
+            queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');
+            queryBuilder.select([
+                'chemist.id',
+                'chemist.userId',
+                'chemist.shopName',
+                'chemist.createdOn',
+                'chemistQrPoints.id',
+                'chemistQrPoints.createdOn',
+                'qr.id',
+                'qr.points',
+                'product.id',
+                'product.productName',
+                'user.userId',
+                'city.id',
+                'city.name',
+                'state.id',
+                'state.name',
+                'headQuarter.id',
+                'headQuarter.name',
+            ]);
+        } else {
+            queryBuilder.leftJoinAndSelect('chemist.user', 'user');
+            queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
+            queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');
+            queryBuilder.leftJoinAndSelect('chemist.shopLicence', 'shopLicence');
+            queryBuilder.leftJoinAndSelect('chemist.shopPhoto', 'shopPhoto');
+            queryBuilder.leftJoinAndSelect('chemist.chemistSpeciality', 'chemistSpeciality');
+            queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
+            queryBuilder.leftJoinAndSelect('user.city', 'city');
+            queryBuilder.leftJoinAndSelect('user.state', 'state');
+            queryBuilder.select();
+        }
 
         // Use query helper to build the query
         QueryHelper.buildQuery(queryBuilder, findOptions);

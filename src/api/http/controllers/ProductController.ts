@@ -5,7 +5,9 @@ import {
 
 import ProductFindRequest from '../../../api/request/ProductFindRequest';
 import FindResponse from '../../../api/response/FindResponse';
+import { PackType } from '../../../models/PackType';
 import { Product } from '../../../models/Product';
+import { ProductType } from '../../../models/ProductType';
 import { User } from '../../../models/User';
 import { ProductService } from '../../../services/ProductService';
 import { Product as Route } from '../../routes/http';
@@ -56,5 +58,29 @@ export class ProductController {
     @Get(Route.POINTS)
     public async getProductPoints(@QueryParam('hqId') hqId: string): Promise<Product[]> {
         return await this.productService.getProductPoints(Number(hqId));
+    }
+
+    @Authorized()
+    @Post(Route.BRAND_TYPE)
+    public async createProductBrandType(@Body() productType: ProductType): Promise<ProductType> {
+        return await this.productService.createProductBrandType(productType);
+    }
+
+    @Authorized()
+    @Post(Route.PACK_TYPE)
+    public async createProductPackType(@Body() packType: PackType): Promise<PackType> {
+        return await this.productService.createProductPackType(packType);
+    }
+
+    @Authorized()
+    @Get(Route.BRAND_TYPE)
+    public async getProductBrandType(): Promise<ProductType[]> {
+        return await this.productService.getProductBrandType();
+    }
+
+    @Authorized()
+    @Get(Route.PACK_TYPE)
+    public async getProductPackType(): Promise<PackType[]> {
+        return await this.productService.getProductPackType();
     }
 }

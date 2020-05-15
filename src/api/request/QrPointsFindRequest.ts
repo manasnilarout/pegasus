@@ -27,4 +27,6 @@ export default class QrPointsFindRequest extends FindRequest {
     @ModelProp('qrPoints.createdOn', { sortable: true })
     @Type(() => Date)
     public createdOn: Date;
+
+    public getRedeemedQrs: 0;
 }

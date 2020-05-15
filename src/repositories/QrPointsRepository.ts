@@ -10,10 +10,35 @@ import QueryHelper from './helpers/QueryHelper';
 export class QrPointsRepository extends Repository<QrPoints> implements AppFindRepository<QrPoints>  {
     public async findAll(findOptions?: QrPointsFindRequest): Promise<FindResponse<QrPoints>> {
         const queryBuilder = this.createQueryBuilder('qrPoints');
-        queryBuilder.leftJoinAndSelect('qrPoints.hqQrPoints', 'hqQrPoints');
-        queryBuilder.leftJoinAndSelect('qrPoints.product', 'product');
-        queryBuilder.leftJoinAndSelect('qrPoints.attachment', 'attachment');
-        queryBuilder.select();
+
+        if (!findOptions.getRedeemedQrs) {
+            queryBuilder.leftJoinAndSelect('qrPoints.hqQrPoints', 'hqQrPoints');
+            queryBuilder.leftJoinAndSelect('qrPoints.product', 'product');
+            queryBuilder.leftJoinAndSelect('qrPoints.attachment', 'attachment');
+            queryBuilder.select();
+        } else {
+            queryBuilder.leftJoinAndSelect('qrPoints.product', 'product');
+            queryBuilder.leftJoinAndSelect('qrPoints.chemistQrPoints', 'chemistQrPoints');
+            queryBuilder.leftJoinAndSelect('chemistQrPoints.chemist', 'chemist');
+            queryBuilder.leftJoinAndSelect('chemistQrPoints.chemistRedemptions', 'chemistRedemptions');
+            queryBuilder.select([
+                'qrPoints.id',
+                'qrPoints.batchNumber',
+                'qrPoints.batchQuantity',
+                'qrPoints.createdOn',
+                'qrPoints.status',
+                'product.id',
+                'product.productName',
+                'chemistQrPoints.id',
+                'chemistQrPoints.createdOn',
+                'chemist.id',
+                'chemist.shopName',
+                'chemistRedemptions.id',
+                'chemistRedemptions.points',
+                'chemistRedemptions.redeemedOn',
+                'chemistRedemptions.initiatedById',
+            ]);
+        }
 
         // Use query helper to build the query
         QueryHelper.buildQuery(queryBuilder, findOptions);

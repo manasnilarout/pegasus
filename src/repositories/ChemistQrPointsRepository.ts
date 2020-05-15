@@ -11,10 +11,35 @@ export class ChemistQrPointsRepository extends Repository<ChemistQrPoint> implem
     public async findAll(findOptions?: ChemistQrPointFindRequest): Promise<FindResponse<ChemistQrPoint>> {
         const queryBuilder = await this.createQueryBuilder('chemistQrPoint');
         queryBuilder.leftJoinAndSelect('chemistQrPoint.chemist', 'chemist');
+        queryBuilder.leftJoinAndSelect('chemist.user', 'user');
+        queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
+        queryBuilder.leftJoinAndSelect('user.city', 'city');
+        queryBuilder.leftJoinAndSelect('user.state', 'state');
         queryBuilder.leftJoinAndSelect('chemistQrPoint.chemistRedemptions', 'chemistRedemptions');
         queryBuilder.leftJoinAndSelect('chemistQrPoint.qr', 'qr');
+        queryBuilder.leftJoinAndSelect('qr.product', 'product');
         queryBuilder.leftJoinAndSelect('qr.hqQrPoints', 'hqQrPoints');
-        queryBuilder.select();
+        queryBuilder.select([
+            'chemistQrPoint.id',
+            'chemistQrPoint.qrId',
+            'chemistQrPoint.chemistId',
+            'chemistQrPoint.createdOn',
+            'chemist.id',
+            'chemist.shopName',
+            'chemist.mrId',
+            'qr.id',
+            'qr.points',
+            'qr.batchNumber',
+            'product.id',
+            'product.productName',
+            'user.userId',
+            'city.id',
+            'city.name',
+            'state.id',
+            'state.name',
+            'headQuarter.id',
+            'headQuarter.name',
+        ]);
 
         // Use query helper to build the query
         QueryHelper.buildQuery(queryBuilder, findOptions);
