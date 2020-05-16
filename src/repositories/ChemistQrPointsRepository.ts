@@ -28,6 +28,7 @@ export class ChemistQrPointsRepository extends Repository<ChemistQrPoint> implem
             'chemistQrPoint.createdOn',
             'chemist.id',
             'chemist.shopName',
+            'chemist.shopPhone',
             'mr.id',
             'mrUser.userId',
             'mrUser.name',

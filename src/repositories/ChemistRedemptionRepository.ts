@@ -28,6 +28,7 @@ export class ChemistRedemptionRepository extends Repository<ChemistRedemptions> 
             'chemist.id',
             'chemist.shopName',
             'chemist.doctorName',
+            'chemist.shopPhone',
             'chemist.points',
             'mr.id',
             'mrUser.userId',

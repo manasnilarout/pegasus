@@ -39,4 +39,12 @@ export const ChemistErrorCodes = {
         id: 'fetching-specialties-failed',
         msg: 'There was an error while fetching specialties.',
     },
+    addingSpecialtyFailed: {
+        id: 'adding-specialty-failed',
+        msg: 'There was an error while adding specialty.',
+    },
+    specialtyAlreadyExists: {
+        id: 'specialty-already-exists',
+        msg: 'Specialty with provided details already exists.',
+    },
 };

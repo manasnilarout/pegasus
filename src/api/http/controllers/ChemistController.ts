@@ -30,7 +30,6 @@ export class ChemistController {
         @Req() req: any,
         @Body() chemist: ChemistRequest
     ): Promise<Chemist> {
-        console.log(JSON.stringify(req.files.shopLicence[0]));
         return await this.chemistService.createChemist(
             chemist,
             req.files.shopLicence[0],
@@ -62,8 +61,8 @@ export class ChemistController {
         return await this.chemistService.updateChemist(
             Number(chemistId),
             chemist,
-            req.files.shopLicence[0],
-            req.files.shopPhoto[0]
+            req.files.shopLicence ? req.files.shopLicence[0] : undefined,
+            req.files.shopPhoto ? req.files.shopPhoto[0] : undefined
         );
     }
 
@@ -90,4 +89,11 @@ export class ChemistController {
     public async getChemistSpecialties(): Promise<Specialty[]> {
         return await this.chemistService.getChemistSpecialties();
     }
+
+    @Authorized()
+    @Post(Route.SPECIALTY)
+    public async addSpecialty(@Body() specialty: Specialty): Promise<Specialty> {
+        return await this.chemistService.addSpecialty(specialty);
+    }
+
 }

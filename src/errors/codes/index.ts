@@ -7,3 +7,4 @@ export * from './AttachmentErrorCodes';
 export * from './QrPointErrorCodes';
 export * from './HqQrPointErrorCodes';
 export * from './PointErrorCodes';
+export * from './LocationErrorCodes';

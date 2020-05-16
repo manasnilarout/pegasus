@@ -131,9 +131,9 @@ export class ChemistService extends AppService {
     ): Promise<Chemist> {
         try {
             const existingChemist = await this.chemistRepository.findOne({
-                relations: ['shopPhoto', 'shopLicence'],
+                relations: ['shopPhoto', 'shopLicence', 'user'],
                 where: {
-                    chemistId,
+                    id: chemistId,
                     status: ChemistStatus.ACTIVE,
                 },
             });
@@ -176,6 +176,16 @@ export class ChemistService extends AppService {
                 existingChemist.doctorName = chemist.doctorName || existingChemist.doctorName;
                 existingChemist.mrId = chemist.mr || existingChemist.mrId;
                 existingChemist.speciality = chemist.specialty || existingChemist.speciality;
+                existingChemist.shopName = chemist.shopName || existingChemist.shopName;
+
+                const userInfo = {
+                    address: chemist.address || existingChemist.user.address,
+                    city: chemist.city || existingChemist.user.city,
+                    state: chemist.state || existingChemist.user.state,
+                    headQuarterId: chemist.headQuarter || existingChemist.user.headQuarterId,
+                };
+
+                Object.assign(existingChemist.user, userInfo);
 
                 return await this.chemistRepository.save(existingChemist);
             });
@@ -251,6 +261,35 @@ export class ChemistService extends AppService {
                 err,
                 ErrorCodes.fetchingSpecialtiesFailed.id,
                 ErrorCodes.fetchingSpecialtiesFailed.msg
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async addSpecialty(specialty: Specialty): Promise<Specialty> {
+        try {
+            const old = await this.specialtyRepository.findOne({
+                where: {
+                    name: specialty.name,
+                },
+            });
+
+            if (old) {
+                throw new AppBadRequestError(
+                    ErrorCodes.specialtyAlreadyExists.id,
+                    ErrorCodes.specialtyAlreadyExists.msg,
+                    { specialty }
+                );
+            }
+
+            return await this.specialtyRepository.save(specialty);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.addingSpecialtyFailed.id,
+                ErrorCodes.addingSpecialtyFailed.msg,
+                { specialty }
             );
             error.log(this.log);
             throw error;

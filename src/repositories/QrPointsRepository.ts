@@ -14,8 +14,26 @@ export class QrPointsRepository extends Repository<QrPoints> implements AppFindR
         if (!findOptions.getRedeemedQrs) {
             queryBuilder.leftJoinAndSelect('qrPoints.hqQrPoints', 'hqQrPoints');
             queryBuilder.leftJoinAndSelect('qrPoints.product', 'product');
+            queryBuilder.leftJoinAndSelect('product.packType', 'packType');
+            queryBuilder.leftJoinAndSelect('product.productType', 'productType');
             queryBuilder.leftJoinAndSelect('qrPoints.attachment', 'attachment');
-            queryBuilder.select();
+            queryBuilder.select([
+                'qrPoints.id',
+                'qrPoints.batchNumber',
+                'qrPoints.batchQuantity',
+                'qrPoints.validFrom',
+                'qrPoints.validTill',
+                'qrPoints.createdOn',
+                'qrPoints.status',
+                'product.id',
+                'product.productName',
+                'product.activeIngredients',
+                'product.packSize',
+                'packType.name',
+                'packType.id',
+                'productType.id',
+                'productType.name',
+            ]);
         } else {
             queryBuilder.leftJoinAndSelect('qrPoints.product', 'product');
             queryBuilder.leftJoinAndSelect('qrPoints.chemistQrPoints', 'chemistQrPoints');

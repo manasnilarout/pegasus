@@ -47,6 +47,7 @@ export const Chemist = {
         return `${this.ID}/claims`;
     },
     SPECIALTIES: '/specialties',
+    SPECIALTY: '/specialty',
 };
 
 export const QR = {
@@ -78,3 +79,10 @@ export const Point = {
     },
     REDEMPTION: '/redemption',
 };
+
+export const LOCATION = {
+    BASE: '/location',
+    STATE: '/state',
+    CITY: '/city',
+    HQ: '/hq',
+}
