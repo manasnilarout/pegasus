@@ -40,7 +40,7 @@ export class ChemistRedemptionRepository extends Repository<ChemistRedemptions> 
             'state.id',
             'state.name',
             'city.id',
-            'state.name',
+            'city.name',
         ]);
 
         // Use query helper to build the query
