@@ -48,6 +48,9 @@ export const Chemist = {
     },
     SPECIALTIES: '/specialties',
     SPECIALTY: '/specialty',
+    get SPECIALTY_ID(): string {
+        return `${this.SPECIALTY}/:specialtyId`;
+    },
 };
 
 export const QR = {

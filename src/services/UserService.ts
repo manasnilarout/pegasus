@@ -401,7 +401,7 @@ export class UserService extends AppService {
     public async editUser(userId: number, user: User): Promise<User> {
         try {
             const existingUser = await this.userRepository.findOne({
-                relations: ['userLoginDetails'],
+                relations: ['userLoginDetails', 'mr'],
                 where: {
                     userId,
                     status: UserStatus.ACTIVE,

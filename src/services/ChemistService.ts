@@ -296,6 +296,36 @@ export class ChemistService extends AppService {
         }
     }
 
+    public async editSpecialty(specialtyId: number, specialty: Specialty): Promise<Specialty> {
+        try {
+            const oldSpecialty = await this.specialtyRepository.findOne({
+                where: {
+                    id: specialtyId,
+                },
+            });
+
+            if (!oldSpecialty) {
+                throw new AppBadRequestError(
+                    ErrorCodes.specialtyNotFound.id,
+                    ErrorCodes.specialtyNotFound.msg,
+                    { specialtyId }
+                );
+            }
+
+            Object.assign(oldSpecialty, specialty);
+            return await this.specialtyRepository.save(oldSpecialty);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.editSpecialtyFailed.id,
+                ErrorCodes.editSpecialtyFailed.msg,
+                { specialtyId, specialty }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
     public async getChemistClaims(chemistId: number, periodInMonths?: number): Promise<Chemist> {
         try {
             const chemist = await this.chemistRepository.findOne({

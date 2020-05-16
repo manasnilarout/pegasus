@@ -47,4 +47,12 @@ export const ChemistErrorCodes = {
         id: 'specialty-already-exists',
         msg: 'Specialty with provided details already exists.',
     },
+    editSpecialtyFailed: {
+        id: 'edit-specialty-failed',
+        msg: 'There was an error while editing specialty.',
+    },
+    specialtyNotFound: {
+        id: 'specialty-not-found',
+        msg: 'Specialty not found.',
+    },
 };

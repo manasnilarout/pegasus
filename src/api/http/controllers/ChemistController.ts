@@ -96,4 +96,12 @@ export class ChemistController {
         return await this.chemistService.addSpecialty(specialty);
     }
 
+    @Authorized()
+    @Put(Route.SPECIALTY_ID)
+    public async editSpecialty(
+        @Param('specialtyId') specialtyId: string,
+        @Body() specialty: Specialty
+    ): Promise<Specialty> {
+        return await this.chemistService.editSpecialty(Number(specialtyId), specialty);
+    }
 }
