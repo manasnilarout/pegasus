@@ -11,10 +11,37 @@ export class ChemistRedemptionRepository extends Repository<ChemistRedemptions> 
     public async findAll(findOptions?: ChemistRedemptionFindRequest): Promise<FindResponse<ChemistRedemptions>> {
         const queryBuilder = this.createQueryBuilder('chemistRedemption');
         queryBuilder.leftJoinAndSelect('chemistRedemption.chemist', 'chemist');
+        queryBuilder.leftJoinAndSelect('chemist.user', 'user');
+        queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
+        queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');
+        queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
+        queryBuilder.leftJoinAndSelect('user.state', 'state');
+        queryBuilder.leftJoinAndSelect('user.city', 'city');
         queryBuilder.leftJoinAndSelect('chemistRedemption.chemistQr', 'chemistQr');
         queryBuilder.leftJoinAndSelect('chemistQr.qr', 'qr');
         queryBuilder.leftJoinAndSelect('qr.hqQrPoints', 'hqQrPoints');
-        queryBuilder.select();
+        queryBuilder.select([
+            'chemistRedemption.id',
+            'chemistRedemption.points',
+            'chemistRedemption.redeemedOn',
+            'chemistRedemption.initiatedById',
+            'chemist.id',
+            'chemist.shopName',
+            'chemist.doctorName',
+            'chemist.points',
+            'mr.id',
+            'mrUser.userId',
+            'mrUser.name',
+            'user.userId',
+            'user.name',
+            'user.address',
+            'headQuarter.id',
+            'headQuarter.name',
+            'state.id',
+            'state.name',
+            'city.id',
+            'state.name',
+        ]);
 
         // Use query helper to build the query
         QueryHelper.buildQuery(queryBuilder, findOptions);
