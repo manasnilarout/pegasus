@@ -12,6 +12,8 @@ export class ChemistQrPointsRepository extends Repository<ChemistQrPoint> implem
         const queryBuilder = await this.createQueryBuilder('chemistQrPoint');
         queryBuilder.leftJoinAndSelect('chemistQrPoint.chemist', 'chemist');
         queryBuilder.leftJoinAndSelect('chemist.user', 'user');
+        queryBuilder.leftJoinAndSelect('chemist.mr', 'mr');
+        queryBuilder.leftJoinAndSelect('mr.user', 'mrUser');
         queryBuilder.leftJoinAndSelect('user.headQuarter', 'headQuarter');
         queryBuilder.leftJoinAndSelect('user.city', 'city');
         queryBuilder.leftJoinAndSelect('user.state', 'state');
@@ -26,7 +28,9 @@ export class ChemistQrPointsRepository extends Repository<ChemistQrPoint> implem
             'chemistQrPoint.createdOn',
             'chemist.id',
             'chemist.shopName',
-            'chemist.mrId',
+            'mr.id',
+            'mrUser.userId',
+            'mrUser.name',
             'qr.id',
             'qr.points',
             'qr.batchNumber',
