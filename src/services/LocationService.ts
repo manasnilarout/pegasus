@@ -113,7 +113,9 @@ export class LocationService extends AppService {
 
     public async getCities(): Promise<City[]> {
         try {
-            return await this.cityRepository.find();
+            return await this.cityRepository.find({
+                relations: ['hq', 'hq.state'],
+            });
         } catch (err) {
             const error = this.classifyError(
                 err,
@@ -141,7 +143,9 @@ export class LocationService extends AppService {
 
     public async getHqs(): Promise<HeadQuarters[]> {
         try {
-            return await this.headQuartersRepository.find();
+            return await this.headQuartersRepository.find({
+                relations: ['state'],
+            });
         } catch (err) {
             const error = this.classifyError(
                 err,
