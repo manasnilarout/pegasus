@@ -7,6 +7,7 @@ export class CreateStatesTable1585762911527 implements MigrationInterface {
         CREATE TABLE IF NOT EXISTS \`states\` (
             \`id\` INT UNSIGNED NOT NULL AUTO_INCREMENT,
             \`name\` VARCHAR(50) NOT NULL,
+            \`status\` TINYINT NOT NULL DEFAULT '1',
             PRIMARY KEY (\`id\`),
             UNIQUE INDEX \`id_UNIQUE\` (\`id\` ASC))
           ENGINE = InnoDB

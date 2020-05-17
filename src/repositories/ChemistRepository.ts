@@ -34,6 +34,8 @@ export class ChemistRepository extends Repository<Chemist> implements AppFindRep
                 'product.id',
                 'product.productName',
                 'user.userId',
+                'user.address',
+                'user.pinCode',
                 'city.id',
                 'city.name',
                 'state.id',

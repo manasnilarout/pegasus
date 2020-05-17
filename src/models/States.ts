@@ -1,10 +1,14 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { City } from './City';
 import { HeadQuarters } from './HeadQuarters';
 import { User } from './User';
 
-@Index('id_UNIQUE', ['id'], { unique: true })
+export enum StateStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('states')
 export class States {
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -12,6 +16,9 @@ export class States {
 
     @Column({ name: 'name' })
     public name: string;
+
+    @Column({ name: 'status' })
+    public status: StateStatus;
 
     @OneToMany(() => User, user => user.state)
     public users: User[];

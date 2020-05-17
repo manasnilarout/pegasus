@@ -15,6 +15,7 @@ export class CreateUserTable1585762911529 implements MigrationInterface {
             \`city\` VARCHAR(30) NOT NULL,
             \`state\` INT UNSIGNED NOT NULL,
             \`address\` VARCHAR(150) NOT NULL,
+            \`pin_code\` VARCHAR(10) NULL,
             \`status\` TINYINT NOT NULL DEFAULT 1,
             \`created_by\` BIGINT UNSIGNED NULL,
             \`created_on\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

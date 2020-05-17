@@ -90,7 +90,7 @@ export class ChemistService extends AppService {
             const chemist = await this.chemistRepository.findOne({
                 relations: ['user'],
                 where: {
-                    chemistId,
+                    id: chemistId,
                     status: ChemistStatus.ACTIVE,
                 },
             });
@@ -183,6 +183,7 @@ export class ChemistService extends AppService {
                     city: chemist.city || existingChemist.user.city,
                     state: chemist.state || existingChemist.user.state,
                     headQuarterId: chemist.headQuarter || existingChemist.user.headQuarterId,
+                    pin: chemist.pin || existingChemist.user.headQuarterId,
                 };
 
                 Object.assign(existingChemist.user, userInfo);
@@ -372,6 +373,7 @@ export class ChemistService extends AppService {
         user.cityId = chemistRequest.city;
         user.stateId = chemistRequest.state;
         user.address = chemistRequest.address;
+        user.pinCode = chemistRequest.pin;
         user.createdBy = loggedInUser.userId;
         user.userLoginDetails = new UserLoginDetails();
         user.userLoginDetails.username = chemistRequest.email;

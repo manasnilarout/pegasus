@@ -6,6 +6,11 @@ import { HeadQuarters } from './HeadQuarters';
 import { States } from './States';
 import { User } from './User';
 
+export enum CityStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('city')
 export class City {
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -17,8 +22,11 @@ export class City {
     @PrimaryColumn({ name: 'hq_id' })
     public hqId: number;
 
-    @Column({ name: 'name', length: 50 })
+    @Column({ name: 'name' })
     public name: string;
+
+    @Column({ name: 'status' })
+    public status: CityStatus;
 
     @OneToMany(() => User, user => user.city)
     public users: User[];

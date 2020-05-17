@@ -35,4 +35,40 @@ export const LocationErrorCodes = {
         id: 'fetching-head-quarters-failed',
         msg: 'There was an error while fetching head quarters.',
     },
+    editCityFailed: {
+        id: 'edit-city-failed',
+        msg: 'There was an error while editing the city.',
+    },
+    editStateFailed: {
+        id: 'edit-state-failed',
+        msg: 'There was an error while editing the state.',
+    },
+    editHqFailed: {
+        id: 'edit-hq-failed',
+        msg: 'There was an error while editing the hq.',
+    },
+    cityNotFound: {
+        id: 'city-not-found',
+        msg: 'City with given details not found',
+    },
+    stateNotFound: {
+        id: 'state-not-found',
+        msg: 'State with given details not found',
+    },
+    hqNotFound: {
+        id: 'hq-not-found',
+        msg: 'HQ with given details not found',
+    },
+    deleteCityFailed: {
+        id: 'delete-city-failed',
+        msg: 'Deleting city failed.',
+    },
+    deleteStateFailed: {
+        id: 'delete-state-failed',
+        msg: 'Deleting state failed.',
+    },
+    deleteHqFailed: {
+        id: 'delete-hq-failed',
+        msg: 'Deleting hq failed.',
+    },
 };

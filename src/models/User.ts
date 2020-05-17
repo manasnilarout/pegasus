@@ -74,6 +74,9 @@ export class User {
     @Column({ name: 'address' })
     public address: string;
 
+    @Column({ name: 'pin_code' })
+    public pinCode: string;
+
     @Column({ name: 'status' })
     public status: UserStatus;
 

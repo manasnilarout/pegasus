@@ -1,13 +1,15 @@
-import {
-    Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { City } from './City';
 import { HqQrPoints } from './HqQrPoints';
 import { States } from './States';
 import { User } from './User';
 
-@Index('id_UNIQUE', ['id'], { unique: true })
+export enum HeadQuarterStatus {
+    ACTIVE = 1,
+    INACTIVE = 0,
+}
+
 @Entity('head_quarters')
 export class HeadQuarters {
     @PrimaryGeneratedColumn({ name: 'id' })
@@ -18,6 +20,9 @@ export class HeadQuarters {
 
     @Column({ name: 'state_id' })
     public stateId: string;
+
+    @Column({ name: 'status' })
+    public status: HeadQuarterStatus;
 
     @OneToMany(() => User, user => user.headQuarter)
     public users: User[];

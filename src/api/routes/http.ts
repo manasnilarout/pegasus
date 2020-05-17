@@ -88,4 +88,5 @@ export const LOCATION = {
     STATE: '/state',
     CITY: '/city',
     HQ: '/hq',
+    ID: '/:id',
 };
