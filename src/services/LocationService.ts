@@ -135,7 +135,7 @@ export class LocationService extends AppService {
             return await this.statesRepository.find({
                 where: {
                     status: StateStatus.ACTIVE,
-                }
+                },
             });
         } catch (err) {
             const error = this.classifyError(
