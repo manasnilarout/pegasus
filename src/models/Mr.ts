@@ -35,6 +35,4 @@ export class Mr {
 
     @OneToMany(() => MrGiftOrders, mrGiftOrders => mrGiftOrders.mr, { cascade: true })
     public mrGiftOrders: MrGiftOrders[];
-
-    public requiredOrders = config.get('thresholds.mrRequiredOrders');
 }

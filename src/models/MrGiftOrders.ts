@@ -13,11 +13,14 @@ export class MrGiftOrders {
     @Column({ name: 'mr_id' })
     public mrId: number;
 
-    @Column({ name: 'order_count' })
-    public orderCount: number;
+    @Column({ name: 'required_gifts' })
+    public requiredGifts: number;
 
-    @Column({ name: 'pending_orders_count' })
-    public pendingOrdersCount: number;
+    @Column({ name: 'received_gifts' })
+    public receivedGifts: number;
+
+    @Column({ name: 'dispatched_gifts' })
+    public dispatchedGifts: number;
 
     @CreateDateColumn({ name: 'created_on' })
     public createdOn: Date;
