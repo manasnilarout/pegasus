@@ -49,4 +49,5 @@
         "excludeRoutes":[],
         "includeQueryParams":false
     }
+    .
 }

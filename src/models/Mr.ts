@@ -2,7 +2,6 @@ import {
     Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn
 } from 'typeorm';
 
-import { config } from '../config';
 import { Chemist } from './Chemist';
 import { MrGiftOrders } from './MrGiftOrders';
 import { User } from './User';
