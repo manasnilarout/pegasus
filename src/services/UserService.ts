@@ -417,6 +417,7 @@ export class UserService extends AppService {
             }
 
             user = Object.assign(existingUser, user);
+            delete user.userLoginDetails;
 
             await this.validateUser(user);
             return await this.userRepository.save(user);
