@@ -12,6 +12,10 @@ export default class ProductFindRequest extends FindRequest {
     @Type(() => Number)
     public productType: number;
 
+    @ModelProp('product.id')
+    @Type(() => Number)
+    public id: number;
+
     @ModelProp('product.name')
     public name: number;
 

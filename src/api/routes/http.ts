@@ -31,7 +31,7 @@ export const User = {
 
 export const Product = {
     BASE: '/product',
-    ID: '/:productId(\d+)',
+    ID: '/:productId([0-9]+$)',
     POINTS: '/points',
     BRAND_TYPE: '/brand-type',
     PACK_TYPE: '/pack-type',
