@@ -43,4 +43,10 @@ export class QRController {
     public async downloadQr(@Param('id') id: string): Promise<Attachments> {
         return await this.qrService.downloadQr(id);
     }
+
+    @Authorized()
+    @Get(Route.DOWNLOAD_BY_BATCH)
+    public async downloadQrByBatch(@Param('batchId') batchId: string): Promise<Attachments> {
+        return await this.qrService.downloadQrByBatch(batchId);
+    }
 }

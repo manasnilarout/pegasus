@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { Attachments } from 'src/models/Attachments';
+import { join } from 'path';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 import { v4 } from 'uuid';
@@ -10,12 +10,14 @@ import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
 import { AppBadRequestError, AppNotFoundError, AppValidationError } from '../errors';
 import { QrPointErrorCodes as ErrorCodes } from '../errors/codes';
+import { Attachments } from '../models/Attachments';
 import { ProductStatus } from '../models/Product';
 import { QrPoints, QrPointsStatus } from '../models/QrPoints';
 import { User } from '../models/User';
 import { ProductRepository } from '../repositories/ProductRepository';
 import { QrPointsRepository } from '../repositories/QrPointsRepository';
 import { QRUtil } from '../utils/qr.util';
+import { RendererUtil } from '../utils/renderer.util';
 import { AppService } from './AppService';
 import { AttachmentService } from './AttachmentService';
 
@@ -133,7 +135,7 @@ export class QRService extends AppService {
             await this.qrPointsRepository.update({
                 batchNumber,
                 batchQuantity,
-            },  {
+            }, {
                 batchNumber: qr.batchNumber || qrs[0].batchNumber,
                 validFrom: qr.validFrom || qrs[0].validFrom,
                 validTill: qr.validTill || qrs[0].validTill,
@@ -192,5 +194,69 @@ export class QRService extends AppService {
             error.log(this.log);
             throw error;
         }
+    }
+
+    public async downloadQrByBatch(batchId: string): Promise<Attachments> {
+        try {
+            const qrs = await this.qrPointsRepository.find({
+                relations: ['attachment'],
+                where: {
+                    batchNumber: batchId,
+                    status: QrPointsStatus.ACTIVE,
+                },
+            });
+
+            if (!qrs || !qrs.length) {
+                throw new AppNotFoundError(
+                    ErrorCodes.noValidQrFound.id,
+                    ErrorCodes.noValidQrFound.msg
+                );
+            }
+
+            const attachments: Attachments[] = [];
+
+            // Collect all the attachments related to QR's
+            for (const qr of qrs) {
+                if (qr.attachment) {
+                    attachments.push(qr.attachment);
+                    continue;
+                }
+
+                const qrUtil = new QRUtil({});
+                const path = await qrUtil.generateQR(qr.id);
+                const attachment = await this.attachmentService.createAttachment({ path });
+                // Store attachment details
+                attachments.push(attachment);
+                qr.attachment = attachment;
+                await this.qrPointsRepository.save(qr);
+            }
+
+            const refinedAttachments = attachments.map(attachment => {
+                attachment.fileLocation = join(__dirname, '../../', attachment.fileLocation);
+                return attachment;
+            });
+            const images = this.chunks(refinedAttachments, config.get('thresholds.maxImagesPerRow'));
+            const pdfUtil = new RendererUtil();
+            const pdfFilePath = await pdfUtil.generatePdf('qr-codes', images);
+            return await this.attachmentService.createAttachment({ path: pdfFilePath });
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.qrDownloadByBatchFailed.id,
+                ErrorCodes.qrDownloadByBatchFailed.msg,
+                { batchId }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    private chunks(array: any[], size: number): any[] {
+        const results = [];
+
+        while (array.length) {
+            results.push(array.splice(0, size));
+        }
+        return results;
     }
 }

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        title QR Code attachments
+    body
+        table(width = "100%")
+            each val, index in data
+                tr(width = "100%")
+                    each attachment in data[index]
+                        td(width = "24%")
+                            - const path = 'file:///' + attachment.fileLocation;
+                            img(src = path alt = path height = "180px")

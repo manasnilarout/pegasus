@@ -27,8 +27,7 @@ export const loadFiles = (filePattern: string[]): string[] => {
 export const moveFile = async (source: string, destination: string, newFileName?: string)
     : Promise<string> => {
     const fileNameWithExtension = getFileName(source);
-    const destinationPath =
-        `${destination}${destination.match(/(\/|\\)$/) ? '' : filePathDelimiter()}${fileNameWithExtension}`;
+    const destinationPath = join(destination, fileNameWithExtension);
     await moveAsync(source, destinationPath);
     if (newFileName) {
         return await renameFile(destinationPath, newFileName);

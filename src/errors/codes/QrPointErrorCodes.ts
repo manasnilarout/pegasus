@@ -35,4 +35,8 @@ export const QrPointErrorCodes = {
         id: 'product-not-found',
         msg: 'Product with given ID not found.',
     },
+    qrDownloadByBatchFailed: {
+        id: 'qr-download-by-batch-failed',
+        msg: 'There was an error while downloading QR\'s using batch number.',
+    },
 };

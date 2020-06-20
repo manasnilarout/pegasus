@@ -13,14 +13,6 @@ export const httpLoader: MicroframeworkLoader = (settings: MicroframeworkSetting
         const expressApp: express.Application = settings.getData('express_app');
         const connection = settings.getData('connection');
 
-        // @TODO Convert require to import.
-        // Importing and not using apiMetrics() causes it to call /metrics continuously.
-        if (env.prometheusMetrics.enabled) {
-            const apiMetrics = require('prometheus-api-metrics');
-            const options = config.get('prometheusMetricsOption');
-            expressApp.use(apiMetrics(options));
-        }
-
         // Add route to serve static files
         expressApp.use(
             env.app.publicRoute,

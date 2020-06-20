@@ -50,6 +50,7 @@
     "figlet": "^1.2.0",
     "glob": "^7.1.2",
     "helmet": "^3.9.0",
+    "html-pdf": "^2.2.0",
     "jsonfile": "5.0.0",
     "microframework-w3tec": "^0.6.3",
     "morgan": "^1.9.0",
@@ -60,7 +61,6 @@
     "nps": "^5.9.3",
     "nps-utils": "^1.5.0",
     "prom-client": "^12.0.0",
-    "prometheus-api-metrics": "^2.2.3",
     "pug": "^2.0.4",
     "qrcode": "^1.4.4",
     "redis": "^3.0.2",
@@ -76,8 +76,7 @@
     "typeorm-typedi-extensions": "^0.2.1",
     "uuid": "^3.3.2",
     "winston": "^3.2.1",
-    "winston-daily-rotate-file": "^3.10.0",
-    "wkhtmltopdf": "^0.3.4"
+    "winston-daily-rotate-file": "^3.10.0"
   },
   "jest": {
     "transform": {
@@ -104,6 +103,7 @@
     "@types/faker": "^4.1.2",
     "@types/figlet": "^1.2.0",
     "@types/helmet": "^0.0.43",
+    "@types/html-pdf": "^2.2.0",
     "@types/jest": "^23.3.2",
     "@types/morgan": "^1.7.35",
     "@types/nanoid": "^2.1.0",

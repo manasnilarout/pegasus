@@ -1,10 +1,10 @@
 import { createWriteStream, exists, readFile, WriteStream } from 'fs';
+import { create } from 'html-pdf';
 import { join } from 'path';
 import { compile } from 'pug';
 import { Stream } from 'stream';
 import { promisify } from 'util';
 import { v4 } from 'uuid';
-import PDF from 'wkhtmltopdf';
 
 import { config } from '../config';
 import { env } from '../env';
@@ -30,7 +30,7 @@ export class RendererUtil {
 
                 this._outputPath = this.getOutputPath(outputFileName);
 
-                PDF(htmlString, { pageSize: 'letter' }, (err, stream: Stream) => {
+                create(htmlString, { format: 'Letter' }).toStream((err, stream: Stream) => {
                     if (err) {
                         return reject(err);
                     }
@@ -52,7 +52,7 @@ export class RendererUtil {
      * @param data Data to be passed to template.
      * @returns rendered HTML string.
      */
-    public async renderHTMLTemplate(templateName: string, data: any, type?: 'sms' | 'pdf'): Promise<string> {
+    public async renderHTMLTemplate(templateName: string, data: any, type: 'sms' | 'pdf' = 'pdf'): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
                 const filePath = join(env.app.dirs.templates, config.get(`dirs.${type}`), `${templateName}.pug`);

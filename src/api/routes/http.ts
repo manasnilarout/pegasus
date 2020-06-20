@@ -58,6 +58,7 @@ export const QR = {
     QR_ID: '/:qrId',
     ID: '/batch-number/:batchNumber/batch-quantity/:batchQuantity',
     DOWNLOAD: '/:id/download',
+    DOWNLOAD_BY_BATCH: '/batch-number/:batchId/download',
 };
 
 export const HqQr = {
