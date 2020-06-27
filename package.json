@@ -1,6 +1,6 @@
 {
   "name": "pegasus",
-  "version": "1.0.0",
+  "version": "1.5.2",
   "description": "An app for health care personals.",
   "main": "src/app.ts",
   "scripts": {
