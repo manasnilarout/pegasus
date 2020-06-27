@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import { In } from 'typeorm';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 
 import HqQrPointsFindRequest from '../api/request/HqQrPointsFindRequest';
@@ -46,19 +47,39 @@ export class HqQrService extends AppService {
                     );
                 }
 
+                // Check if old HQ QR's are present
+                const oldHqQrs = await this.hqQrPointsRepository.find({
+                    where: {
+                        qrPointId: In(brandQrs.map(brandQr => brandQr.id)),
+                    },
+                });
+
+                const oldHqQrIds = oldHqQrs.map(brandQr => brandQr.qrPointId);
+
                 const newHqQrs: HqQrPoints[] = [];
 
                 for (const qr of brandQrs) {
-                    console.log(qr.id);
-                    const newHqQr = Object.assign(new HqQrPoints(), {
-                        hqId: hqQr.hqId,
-                        hqQrPoints: hqQr.hqQrPoints,
-                        qrPointId: qr.id,
-                        status: HqQrPointStatus.ACTIVE,
-                        createdById: loggedInUser.userId,
-                    });
+                    if (
+                        oldHqQrIds.indexOf(qr.id) > -1 &&
+                        oldHqQrs[oldHqQrIds.indexOf(qr.id)].hqId === hqQr.hqId
+                    ) {
+                        const anotherHqQr = oldHqQrs[oldHqQrIds.indexOf(qr.id)];
+                        anotherHqQr.hqQrPoints = hqQr.hqQrPoints;
+                        anotherHqQr.status = HqQrPointStatus.ACTIVE;
+                        anotherHqQr.createdById = loggedInUser.userId;
 
-                    newHqQrs.push(newHqQr);
+                        newHqQrs.push(anotherHqQr);
+                    } else {
+                        const newHqQr = Object.assign(new HqQrPoints(), {
+                            hqId: hqQr.hqId,
+                            hqQrPoints: hqQr.hqQrPoints,
+                            qrPointId: qr.id,
+                            status: HqQrPointStatus.ACTIVE,
+                            createdById: loggedInUser.userId,
+                        });
+
+                        newHqQrs.push(newHqQr);
+                    }
                 }
 
                 return await this.hqQrPointsRepository.save(newHqQrs);
