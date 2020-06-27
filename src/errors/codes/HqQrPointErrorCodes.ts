@@ -31,4 +31,8 @@ export const HqQrPointErrorCodes = {
         id: 'hqh-qr-delete-failed',
         msg: 'There was an error while deleting HQ-QR.',
     },
+    noActiveQrs: {
+        id: 'no-active-qr\'s',
+        msg: 'No active QR\'s found for the given brand.',
+    },
 };

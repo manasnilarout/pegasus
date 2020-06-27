@@ -17,7 +17,10 @@ export class HqQrController {
 
     @Authorized()
     @Post()
-    public async createHqQr(@Body() hqQr: HqQrPoints, @CurrentUser() currentUser: User): Promise<HqQrPoints> {
+    public async createHqQr(
+        @Body() hqQr: HqQrPoints & { brandId: number },
+        @CurrentUser() currentUser: User
+    ): Promise<HqQrPoints | HqQrPoints[]> {
         return await this.hqQrService.createHqQr(hqQr, currentUser);
     }
 

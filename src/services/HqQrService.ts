@@ -24,8 +24,46 @@ export class HqQrService extends AppService {
         super();
     }
 
-    public async createHqQr(hqQr: HqQrPoints, loggedInUser: User): Promise<HqQrPoints> {
+    public async createHqQr(
+        hqQr: HqQrPoints & { brandId: number },
+        loggedInUser: User
+    ): Promise<HqQrPoints | HqQrPoints[]> {
         try {
+
+            if (hqQr.brandId) {
+                const brandQrs = await this.qrPointsRepository.find({
+                    where: {
+                        productId: hqQr.brandId,
+                        status: QrPointsStatus.ACTIVE,
+                    },
+                });
+
+                if (!brandQrs || !brandQrs.length) {
+                    throw new AppBadRequestError(
+                        ErrorCodes.noActiveQrs.id,
+                        ErrorCodes.noActiveQrs.msg,
+                        { hqQr }
+                    );
+                }
+
+                const newHqQrs: HqQrPoints[] = [];
+
+                for (const qr of brandQrs) {
+                    console.log(qr.id);
+                    const newHqQr = Object.assign(new HqQrPoints(), {
+                        hqId: hqQr.hqId,
+                        hqQrPoints: hqQr.hqQrPoints,
+                        qrPointId: qr.id,
+                        status: HqQrPointStatus.ACTIVE,
+                        createdById: loggedInUser.userId,
+                    });
+
+                    newHqQrs.push(newHqQr);
+                }
+
+                return await this.hqQrPointsRepository.save(newHqQrs);
+            }
+
             const oldHqQr = await this.hqQrPointsRepository.findOne({
                 where: {
                     qrPointId: hqQr.qrPointId,
