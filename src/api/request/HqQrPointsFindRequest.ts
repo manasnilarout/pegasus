@@ -16,7 +16,7 @@ export default class HqQrPointsFindRequest extends FindRequest {
     @ModelProp('hqQrPoints.id')
     public id: number;
 
-    @ModelProp('hqQrPoints.qrPointsId')
+    @ModelProp('hqQrPoints.qrPointId')
     public qrPointId: number;
 
     @ModelProp('hqQrPoints.createdOn', { sortable: true })
