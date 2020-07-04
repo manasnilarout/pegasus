@@ -55,4 +55,32 @@ export const ProductErrorCodes = {
         id: 'pack-type-already-exists',
         msg: 'Pack type already exists.',
     },
+    editProductTypeFailed: {
+        id: 'edit-product-type-failed',
+        msg: 'There was an error while editing product type.',
+    },
+    productBrandTypeNotFound: {
+        id: 'product-brand-type-not-found',
+        msg: 'Product brand type not found.',
+    },
+    operationNotAllowed: {
+        id: 'operation-not-allowed',
+        msg: 'Given operation is not allowed.',
+    },
+    packTypeNotFound: {
+        id: 'pack-type-not-found',
+        msg: 'Pack type not found.',
+    },
+    editPackTypeFailed: {
+        id: 'edit-pack-type-failed',
+        msg: 'There was an error while editing pack type.',
+    },
+    deleteProductTypeFailed: {
+        id: 'delete-product-type-failed',
+        msg: 'There was an error while deleting product type.',
+    },
+    deletePackTypeFailed: {
+        id: 'delete-pack-type-failed',
+        msg: 'There was an error while deleting the pack.',
+    },
 };

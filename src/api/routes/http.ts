@@ -34,7 +34,13 @@ export const Product = {
     ID: '/:productId([0-9]+$)',
     POINTS: '/points',
     BRAND_TYPE: '/brand-type',
+    get BRAND_TYPE_ID(): string {
+        return `${this.BRAND_TYPE}/:brandTypeId`;
+    },
     PACK_TYPE: '/pack-type',
+    get PACK_TYPE_ID(): string {
+        return `${this.PACK_TYPE}/:packTypeId`;
+    },
 };
 
 export const Chemist = {

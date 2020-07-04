@@ -8,9 +8,9 @@ import { config } from '../config';
 import { Logger, LoggerInterface } from '../decorators/Logger';
 import { AppBadRequestError, AppValidationError } from '../errors';
 import { ProductErrorCodes as ErrorCodes } from '../errors/codes';
-import { PackType } from '../models/PackType';
+import { PackType, PackTypeStatus } from '../models/PackType';
 import { Product, ProductStatus } from '../models/Product';
-import { ProductType } from '../models/ProductType';
+import { ProductType, ProductTypeStatus } from '../models/ProductType';
 import { User } from '../models/User';
 import { PackTypeRepository } from '../repositories/PackTypeRepository';
 import { ProductRepository } from '../repositories/ProductRepository';
@@ -176,6 +176,43 @@ export class ProductService extends AppService {
         }
     }
 
+    public async editProductBrandType(
+        brandTypeId: number,
+        productType: ProductType
+    ): Promise<ProductType> {
+        try {
+            const existingProductType: ProductType = await this.getProductBrandType(brandTypeId) as ProductType;
+            Object.assign(existingProductType, productType);
+            return await this.productTypeRepository.save(existingProductType);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.editProductTypeFailed.id,
+                ErrorCodes.editProductTypeFailed.msg,
+                { brandTypeId, productType }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async deleteProductBrandType(brandTypeId: number): Promise<ProductType> {
+        try {
+            const existingProductType: ProductType = await this.getProductBrandType(brandTypeId) as ProductType;
+            existingProductType.status = ProductTypeStatus.INACTIVE;
+            return await this.productTypeRepository.save(existingProductType);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.deleteProductTypeFailed.id,
+                ErrorCodes.deleteProductTypeFailed.msg,
+                { brandTypeId }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
     public async createProductPackType(packType: PackType): Promise<PackType> {
         try {
             const old = await this.packTypeRepository.findOne({
@@ -203,9 +240,66 @@ export class ProductService extends AppService {
         }
     }
 
-    public async getProductBrandType(): Promise<ProductType[]> {
+    public async editProductPackType(
+        packTypeId: number,
+        packType: PackType
+    ): Promise<PackType> {
         try {
-            return await this.productTypeRepository.find();
+            const existingPackType: PackType = await this.getProductPackType(packTypeId) as PackType;
+            Object.assign(existingPackType, packType);
+            return await this.packTypeRepository.save(existingPackType);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.editPackTypeFailed.id,
+                ErrorCodes.editPackTypeFailed.msg,
+                { packTypeId, packType }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async deleteProductPackType(packTypeId: number): Promise<PackType> {
+        try {
+            const existingPackType: PackType = await this.getProductPackType(packTypeId) as PackType;
+            existingPackType.status = PackTypeStatus.INACTIVE;
+            return await this.packTypeRepository.save(existingPackType);
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.deletePackTypeFailed.id,
+                ErrorCodes.deletePackTypeFailed.msg,
+                { packTypeId }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getProductBrandType(id?: number): Promise<ProductType | ProductType[]> {
+        try {
+
+            if (id) {
+                const productBrandType = await this.productTypeRepository.findOne({
+                    id,
+                    status: ProductTypeStatus.ACTIVE,
+                });
+
+                if (!productBrandType) {
+                    throw new AppBadRequestError(
+                        ErrorCodes.productBrandTypeNotFound.id,
+                        ErrorCodes.productBrandTypeNotFound.msg,
+                        { id }
+                    );
+                }
+
+                return productBrandType;
+            }
+
+            return await this.productTypeRepository.find({
+                status: ProductTypeStatus.ACTIVE,
+            });
         } catch (err) {
             const error = this.classifyError(
                 err,
@@ -217,9 +311,28 @@ export class ProductService extends AppService {
         }
     }
 
-    public async getProductPackType(): Promise<PackType[]> {
+    public async getProductPackType(id?: number): Promise<PackType | PackType[]> {
         try {
-            return await this.packTypeRepository.find();
+            if (id) {
+                const packTypeType = await this.packTypeRepository.findOne({
+                    id,
+                    status: PackTypeStatus.ACTIVE,
+                });
+
+                if (!packTypeType) {
+                    throw new AppBadRequestError(
+                        ErrorCodes.packTypeNotFound.id,
+                        ErrorCodes.packTypeNotFound.msg,
+                        { id }
+                    );
+                }
+
+                return packTypeType;
+            }
+
+            return await this.packTypeRepository.find({
+                status: PackTypeStatus.ACTIVE,
+            });
         } catch (err) {
             const error = this.classifyError(
                 err,
