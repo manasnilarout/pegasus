@@ -323,8 +323,8 @@ export class PointService extends AppService {
         } catch (err) {
             const error = this.classifyError(
                 err,
-                ErrorCodes.pointsRedemptionFailed.id,
-                ErrorCodes.pointsRedemptionFailed.msg,
+                ErrorCodes.calculatingDashboardRecordsFailed.id,
+                ErrorCodes.calculatingDashboardRecordsFailed.msg,
                 { durationInMonths }
             );
             error.log(this.log);

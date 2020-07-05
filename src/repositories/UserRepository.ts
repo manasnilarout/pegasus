@@ -20,6 +20,7 @@ export class UserRepository extends Repository<User> implements AppFindRepositor
 
         if (findOptions.designation === UserType.MR) {
             queryBuilder.leftJoinAndSelect('user.mr', 'mr');
+            queryBuilder.leftJoinAndSelect('user.userLoginDetails', 'userLoginDetails');
             queryBuilder.leftJoinAndSelect('mr.chemists', 'chemists');
             queryBuilder.leftJoinAndSelect('chemists.user', 'chemistUser');
             queryBuilder.leftJoinAndSelect('chemistUser.state', 'chemistState');
