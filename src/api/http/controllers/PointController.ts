@@ -66,4 +66,12 @@ export class PointController {
     ): Promise<ChemistRedemptions> {
         return await this.pointService.redeemPoints(chemistId, points, otp, user);
     }
+
+    @Authorized()
+    @Get(Route.DASHBOARD)
+    public async getDashboardPoints(
+        @QueryParam('durationInMonths') durationInMonths: string = '1'
+    ): Promise<any> {
+        return await this.pointService.getDashboardPoints(Number(durationInMonths));
+    }
 }

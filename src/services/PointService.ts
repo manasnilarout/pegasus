@@ -1,6 +1,6 @@
 import eventDispatcher from 'event-dispatch';
 import { Service } from 'typedi';
-import { In } from 'typeorm';
+import { In, MoreThanOrEqual } from 'typeorm';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 
 import ChemistQrPointFindRequest from '../api/request/ChemistQrPointFindRequest';
@@ -20,6 +20,7 @@ import { User } from '../models/User';
 import { ChemistQrPointsRepository } from '../repositories/ChemistQrPointsRepository';
 import { ChemistRedemptionRepository } from '../repositories/ChemistRedemptionRepository';
 import { ChemistRepository } from '../repositories/ChemistRepository';
+import { MrGiftOrdersRepository } from '../repositories/MrGiftOrdersRepository';
 import { OtpRepository } from '../repositories/OTPRepository';
 import { QrPointsRepository } from '../repositories/QrPointsRepository';
 import { RendererUtil } from '../utils/renderer.util';
@@ -35,7 +36,8 @@ export class PointService extends AppService {
         @OrmRepository() private chemistRepository: ChemistRepository,
         @OrmRepository() private qrPointsRepository: QrPointsRepository,
         @OrmRepository() private chemistRedemptionRepository: ChemistRedemptionRepository,
-        @OrmRepository() private otpRepository: OtpRepository
+        @OrmRepository() private otpRepository: OtpRepository,
+        @OrmRepository() private mrGiftOrdersRepository: MrGiftOrdersRepository
     ) {
         super();
     }
@@ -268,6 +270,62 @@ export class PointService extends AppService {
                 ErrorCodes.pointsRedemptionFailed.id,
                 ErrorCodes.pointsRedemptionFailed.msg,
                 { chemistId, points }
+            );
+            error.log(this.log);
+            throw error;
+        }
+    }
+
+    public async getDashboardPoints(durationInMonths: number): Promise<any> {
+        try {
+            const firstDateOfTheMonth: Date = new Date(new Date().setDate(1));
+
+            if (durationInMonths !== 1) {
+                const currentMonth = firstDateOfTheMonth.getMonth();
+                firstDateOfTheMonth.setMonth(currentMonth - durationInMonths);
+            }
+
+            this.log.info(`Getting MR order details for ${durationInMonths} month(s).`);
+            const orders = await this.mrGiftOrdersRepository.find({
+                select: ['receivedGifts', 'dispatchedGifts', 'mr'],
+                where: {
+                    createdOn: MoreThanOrEqual(firstDateOfTheMonth),
+                },
+            });
+
+            let totalOrders = 0;
+            let totalMrOrders = 0;
+
+            orders.forEach(order => {
+                totalOrders += order.receivedGifts;
+                totalMrOrders += order.dispatchedGifts;
+            });
+
+            this.log.info('Getting chemist(s) info.');
+            const activeChemists = await this.chemistRepository.find({
+                select: ['id'],
+                where: { status: ChemistStatus.ACTIVE },
+            });
+            const activeChemistCount = activeChemists.length;
+
+            const chemistRedemptions = await this.chemistRedemptionRepository.find({
+                select: ['chemistId', 'points'],
+                where: { redeemedOn: MoreThanOrEqual(firstDateOfTheMonth) },
+            });
+
+            let totalRedeemedPoints = 0;
+            chemistRedemptions.forEach(chemistRedemption => {
+                totalRedeemedPoints += chemistRedemption.points;
+            });
+            const totalRedemptionCount = chemistRedemptions.length;
+
+            return { totalOrders, totalMrOrders, activeChemistCount, totalRedeemedPoints, totalRedemptionCount };
+        } catch (err) {
+            const error = this.classifyError(
+                err,
+                ErrorCodes.pointsRedemptionFailed.id,
+                ErrorCodes.pointsRedemptionFailed.msg,
+                { durationInMonths }
             );
             error.log(this.log);
             throw error;

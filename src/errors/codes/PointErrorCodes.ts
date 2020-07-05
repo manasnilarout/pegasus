@@ -47,4 +47,8 @@ export const PointErrorCodes = {
         id: 'received-invalid-otp',
         msg: ' Received invalid OTP.',
     },
+    calculatingDashboardRecordsFailed: {
+        id: 'calculating-dashboard-records-failed',
+        msg: 'There was an error while calculating dashboard records.',
+    },
 };

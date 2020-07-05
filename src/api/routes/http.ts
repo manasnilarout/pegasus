@@ -88,6 +88,7 @@ export const Point = {
         return `${this.REDEEM}${Chemist.BASE}${Chemist.ID}/otp`;
     },
     REDEMPTION: '/redemption',
+    DASHBOARD: '/dashboard',
 };
 
 export const LOCATION = {
