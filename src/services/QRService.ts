@@ -214,10 +214,12 @@ export class QRService extends AppService {
             }
 
             const attachments: Attachments[] = [];
+            const qrIds: string[] = [];
 
             // Collect all the attachments related to QR's
             for (const qr of qrs) {
                 if (qr.attachment) {
+                    qrIds.push(qr.id);
                     attachments.push(qr.attachment);
                     continue;
                 }
@@ -226,15 +228,21 @@ export class QRService extends AppService {
                 const path = await qrUtil.generateQR(qr.id);
                 const attachment = await this.attachmentService.createAttachment({ path });
                 // Store attachment details
+                qrIds.push(qr.id);
                 attachments.push(attachment);
                 qr.attachment = attachment;
                 await this.qrPointsRepository.save(qr);
             }
 
-            const refinedAttachments = attachments.map(attachment => {
+            const refinedAttachments = attachments.map((
+                attachment: Attachments & { qrId?: string },
+                index: number
+            ) => {
                 attachment.fileLocation = join(__dirname, '../../', attachment.fileLocation);
+                attachment.qrId = qrIds[index];
                 return attachment;
             });
+
             const images = this.chunks(refinedAttachments, config.get('thresholds.maxImagesPerRow'));
             const pdfUtil = new RendererUtil();
             const pdfFilePath = await pdfUtil.generatePdf('qr-codes', images);

@@ -3,11 +3,24 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         title QR Code attachments
+
+        style(type="text/css").
+            td.qr-image {
+                padding-left: 60px;
+            }
+
+            td.qr-value, .heading {
+                text-align: center;
+            }
     body
-        table(width = "100%")
+        h1(class = "heading") Generated QR's
+        table(width = "100%" border = "1")
             each val, index in data
                 tr(width = "100%")
                     each attachment in data[index]
-                        td(width = "24%")
+                        td(width = "75px" height = "75px" class = "qr-image")
                             - const path = 'file:///' + attachment.fileLocation;
-                            img(src = path alt = path height = "180px")
+                            img(src = path alt = path width = "75px" height = "75px")
+                tr(width = "100%")
+                    each attachment in data[index]
+                        td(class = "qr-value") #{attachment.qrId}
