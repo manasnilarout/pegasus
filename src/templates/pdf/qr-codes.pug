@@ -6,14 +6,20 @@ html(lang="en")
 
         style(type="text/css").
             td.qr-image {
-                padding-left: 6%;
+                padding-left: 5%;
+                padding-top: 8px;
             }
 
-            td.qr-value, .heading {
+            .heading {
                 text-align: center;
             }
+
+            table, tr, td {
+                border-collapse: collapse;
+                border: 3px solid black;
+            }
     body
-        h1(class = "heading") Generated QR's
+        h1(class = "heading") #{data[0][0].batchNumber}
         table(width = "100%" border = "1")
             each val, index in data
                 tr(width = "100%")
@@ -21,6 +27,4 @@ html(lang="en")
                         td(width = "75px" height = "75px" class = "qr-image")
                             - const path = 'file:///' + attachment.fileLocation;
                             img(src = path alt = path width = "75px" height = "75px")
-                tr(width = "100%")
-                    each attachment in data[index]
-                        td(class = "qr-value") #{attachment.qrId}
+                            p #{attachment.qrId}

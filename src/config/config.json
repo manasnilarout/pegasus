@@ -37,6 +37,6 @@
     },
     "thresholds": {
         "chemistMinPoints": 1000,
-        "maxImagesPerRow": 4
+        "maxImagesPerRow": 5
     }
 }

@@ -1,8 +1,8 @@
 import { validate } from 'class-validator';
+import { nanoid } from 'nanoid';
 import { join } from 'path';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
-import { v4 } from 'uuid';
 
 import QrPointsFindRequest from '../api/request/QrPointsFindRequest';
 import FindResponse from '../api/response/FindResponse';
@@ -72,7 +72,7 @@ export class QRService extends AppService {
             const qrs: QrPoints[] = [];
             for (let i = 0; i < qr.batchQuantity; i++) {
                 const newQr = Object.assign(new QrPoints(), qr);
-                newQr.id = v4();
+                newQr.id = nanoid(10);
                 qrs.push(newQr);
             }
 
@@ -235,11 +235,12 @@ export class QRService extends AppService {
             }
 
             const refinedAttachments = attachments.map((
-                attachment: Attachments & { qrId?: string },
+                attachment: Attachments & { qrId?: string, batchNumber?: string },
                 index: number
             ) => {
                 attachment.fileLocation = join(__dirname, '../../', attachment.fileLocation);
                 attachment.qrId = qrIds[index];
+                attachment.batchNumber = batchId;
                 return attachment;
             });
 
