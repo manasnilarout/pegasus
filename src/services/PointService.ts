@@ -193,15 +193,7 @@ export class PointService extends AppService {
         : Promise<ChemistRedemptions> {
         try {
             // Validate OTP for points redemption
-            const otp = await this.otpRepository.findOne({
-                relations: ['user', 'user.userLoginDetails'],
-                where: {
-                    otp: otpString,
-                    status: OTPStatus.ACTIVE,
-                    reason: OTPReason.REDEEM_POINTS,
-                    chemistId,
-                },
-            });
+            const otp = await this.otpRepository.getOtp(otpString, chemistId);
 
             if (!otp) {
                 throw new AppUnauthorizedError(
