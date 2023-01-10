@@ -38,7 +38,7 @@
     "class-validator": "^0.9.1",
     "cls-hooked": "^4.2.2",
     "commander": "^2.19.0",
-    "convict": "^5.0.0",
+    "convict": "^6.2.4",
     "copyfiles": "^2.1.0",
     "cors": "^2.8.4",
     "dotenv": "8.0.0",
